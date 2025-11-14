@@ -1,8 +1,4 @@
-# app.py — CORRECTED VERSION
-
 import streamlit as st
-import base64  # <-- Keep this import
-
 from config.settings import configure_page
 from services.gemini_service import initialize_gemini
 from styles.css_styles import apply_custom_css
@@ -12,7 +8,7 @@ from components.features import render_features_section
 from components.footer import render_footer
 from components.worksheet_form import render_worksheet_form
 
-# Initialize App
+# Initialize
 configure_page()
 initialize_gemini()
 apply_custom_css()
@@ -23,24 +19,12 @@ if "logged_in" not in st.session_state:
 if "show_generator" not in st.session_state:
     st.session_state.show_generator = False
 
-# --- ✅ LOAD LOGO BEFORE RENDERING NAVIGATION ---
-def get_base64_image(image_path):
-    try:
-        with open(image_path, "rb") as img_file:
-            return base64.b64encode(img_file.read()).decode()
-    except Exception as e:
-        st.warning(f"⚠️ Failed to load logo: {image_path} | Error: {e}")
-        return None
+# Render Navigation
+render_navigation()
 
-# ✅ Use YOUR exact path
-LOGO_PATH = r"C:\Users\Saraga Sundar\ai_worksheet_app\assets\images\logo (1).png"
-logo_base64 = get_base64_image(LOGO_PATH)
-
-# --- ✅ NOW RENDER NAVIGATION WITH THE LOGO ---
-render_navigation(logo_base64=logo_base64)
-
-# --- MAIN CONTENT BEGINS HERE ---
+# Main Content
 if not st.session_state.show_generator:
+    # Landing Page
     render_hero_section()
     
     # Center button
@@ -63,3 +47,18 @@ else:
         st.rerun()
     
     render_worksheet_form()
+    # In app.py — ADD THESE LINES
+
+import base64
+
+def get_base64_image(image_path):
+    try:
+        with open(image_path, "rb") as img_file:
+            return base64.b64encode(img_file.read()).decode()
+    except Exception as e:
+        st.warning(f"THANK YOU FOR VISITING")
+        return None
+
+# Load logo — UPDATE THIS PATH TO YOUR ACTUAL FILE
+LOGO_PATH = r"C:\Users\Saraga Sundar\Downloads\svgtopng\logo (1).png"
+logo_base64 = get_base64_image(LOGO_PATH)
