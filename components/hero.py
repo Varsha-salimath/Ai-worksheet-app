@@ -5,7 +5,7 @@ def render_hero_section():
     """Render hero section with avatar"""
     
     # Update this path to your actual avatar image location
-    aina_avatar_base64 = get_base64_image(r"C:\Users\Saraga Sundar\Downloads\20250910113600.jpg")
+    aina_avatar_base64 = get_base64_image("assets/images/hero.jpg")
     
     avatar_html = ""
     if aina_avatar_base64:
