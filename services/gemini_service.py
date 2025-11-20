@@ -1,15 +1,15 @@
 import streamlit as st
 import google.generativeai as genai
-<<<<<<< HEAD
 import os
 from config.settings import load_api_key, GEMINI_MODEL, get_model_pricing
 
-# Debug: Print what we're loading
+# ---------------------------------------------------
+# LANGFUSE INITIALIZATION (cleaned)
+# ---------------------------------------------------
 print("=" * 50)
 print("🔍 LANGFUSE DEBUG MODE")
 print("=" * 50)
 
-# Try to import Langfuse
 try:
     from langfuse_sdk import Langfuse
     LANGFUSE_AVAILABLE = True
@@ -18,7 +18,6 @@ except ImportError as e:
     LANGFUSE_AVAILABLE = False
     print(f"❌ Langfuse package not found: {e}")
 
-# Initialize Langfuse
 langfuse = None
 langfuse_enabled = False
 
@@ -30,13 +29,7 @@ if LANGFUSE_AVAILABLE:
     host = os.getenv("LANGFUSE_HOST", "https://cloud.langfuse.com")
 
     print(f"   LANGFUSE_PUBLIC_KEY exists: {bool(public_key)}")
-    if public_key:
-        print(f"   LANGFUSE_PUBLIC_KEY: {public_key[:15]}...")
-
     print(f"   LANGFUSE_SECRET_KEY exists: {bool(secret_key)}")
-    if secret_key:
-        print(f"   LANGFUSE_SECRET_KEY: {secret_key[:15]}...")
-
     print(f"   LANGFUSE_HOST: {host}")
 
     if public_key and secret_key:
@@ -53,17 +46,17 @@ if LANGFUSE_AVAILABLE:
             print(f"❌ Langfuse initialization failed: {e}")
             langfuse_enabled = False
     else:
-        print("❌ Langfuse keys not found in environment variables")
+        print("❌ Langfuse keys missing")
 else:
-    print("❌ Langfuse package not available")
+    print("❌ Langfuse not available")
 
 print("=" * 50)
 print()
 
-=======
-from config.settings import load_api_key
->>>>>>> e006eed1bcfc9cc9e5d9cab6c33fde6428640f1f
 
+# ---------------------------------------------------
+# GEMINI INITIALIZATION
+# ---------------------------------------------------
 def initialize_gemini():
     """Initialize Google Gemini API"""
     api_key = load_api_key()
@@ -73,8 +66,10 @@ def initialize_gemini():
         st.error(f"❌ Error configuring Gemini API: {str(e)}")
         st.stop()
 
-<<<<<<< HEAD
 
+# ---------------------------------------------------
+# SESSION ID
+# ---------------------------------------------------
 def get_session_id():
     """Get or create unique session ID"""
     if "session_id" not in st.session_state:
@@ -83,6 +78,9 @@ def get_session_id():
     return st.session_state.session_id
 
 
+# ---------------------------------------------------
+# WORKSHEET GENERATION
+# ---------------------------------------------------
 def generate_worksheet_content(grade, subject, chapter, difficulty, num_questions):
     """Generate worksheet with Langfuse v3 tracking"""
 
@@ -92,18 +90,8 @@ def generate_worksheet_content(grade, subject, chapter, difficulty, num_question
         "Hard": f"suitable for {grade} students who mastered {chapter}. Challenging, high-depth questions."
     }
 
-=======
-def generate_worksheet_content(grade, subject, chapter, difficulty, num_questions):
-    """Generate worksheet questions using Gemini API"""
-    
-    difficulty_instructions = {
-        "Easy": f"suitable for {grade} students who are just beginning to learn {chapter}. Questions should test basic understanding and fundamental concepts.",
-        "Medium": f"suitable for {grade} students with intermediate knowledge of {chapter}. Questions should require application of concepts and some problem-solving.",
-        "Hard": f"suitable for {grade} students who have mastered {chapter}. Questions should be challenging, requiring deep understanding, critical thinking, and advanced problem-solving skills."
-    }
-    
->>>>>>> e006eed1bcfc9cc9e5d9cab6c33fde6428640f1f
-    prompt = f"""Generate exactly {num_questions} {difficulty} difficulty questions for {grade} students on the topic: {chapter} ({subject}).
+    prompt = f"""
+Generate exactly {num_questions} {difficulty} difficulty questions for {grade} students on the topic: {chapter} ({subject}).
 
 Context:
 - Grade Level: {grade}
@@ -112,7 +100,6 @@ Context:
 - Difficulty: {difficulty} - {difficulty_instructions[difficulty]}
 
 Requirements:
-<<<<<<< HEAD
 - EXACTLY {num_questions} questions
 - Include MCQ, short answer, long answer, numerical problems
 - Each question MUST have a detailed solution
@@ -123,8 +110,6 @@ A1. [Answer]
 
 Q2. [Question]
 A2. [Answer]
-
-Continue till {num_questions} questions.
 """
 
     # Create Langfuse trace
@@ -144,7 +129,7 @@ Continue till {num_questions} questions.
                 }
             )
             trace_id = trace.id
-            print(f"✅ Trace created successfully")
+            print("✅ Trace created successfully")
         except Exception as e:
             print(f"⚠️ Trace creation failed: {e}")
 
@@ -170,7 +155,7 @@ Continue till {num_questions} questions.
     output_cost = (output_tokens / 1000) * pricing["output_per_1k"]
     total_cost = input_cost + output_cost
 
-    # Log to Langfuse using v3 API
+    # Log usage to Langfuse
     if langfuse_enabled and langfuse and trace_id:
         try:
             langfuse.generation(
@@ -194,14 +179,13 @@ Continue till {num_questions} questions.
                 }
             )
 
-            # Store cost inside Langfuse
             langfuse.score(
                 trace_id=trace_id,
                 name="total_cost_usd",
                 value=total_cost
             )
 
-            print(f"✅ Logged to Langfuse successfully")
+            print("✅ Logged to Langfuse successfully")
         except Exception as e:
             print(f"⚠️ Langfuse logging failed: {e}")
 
@@ -213,58 +197,31 @@ Continue till {num_questions} questions.
     }
 
 
+# ---------------------------------------------------
+# PARSE Q & A
+# ---------------------------------------------------
 def parse_questions_and_answers(generated_text):
     """Parse Q & A into separate lists"""
+
     questions_list = []
     answers_list = []
 
-    lines = generated_text.split('\n')
+    lines = generated_text.split("\n")
     current_question = ""
     current_answer = ""
 
-=======
-- Create EXACTLY {num_questions} questions (no more, no less)
-- Difficulty level: {difficulty}
-- Include variety: Multiple Choice Questions (MCQ), Short Answer, Long Answer, and Numerical Problems
-- CBSE curriculum-aligned for {grade} level
-- Questions should be appropriate for {difficulty} difficulty
-- For each question, provide a detailed, step-by-step answer
-
-Format EXACTLY as shown below (maintain this format strictly):
-Q1. [Question text]
-A1. [Detailed answer with explanation]
-
-Q2. [Question text]
-A2. [Detailed answer with explanation]
-
-Continue this pattern for all {num_questions} questions."""
-
-    model = genai.GenerativeModel("gemini-2.0-flash")
-    response = model.generate_content(prompt)
-    return response.text
-
-def parse_questions_and_answers(generated_text):
-    """Parse generated text into questions and answers lists"""
-    questions_list = []
-    answers_list = []
-    
-    lines = generated_text.split('\n')
-    current_question = ""
-    current_answer = ""
-    
->>>>>>> e006eed1bcfc9cc9e5d9cab6c33fde6428640f1f
     for line in lines:
         line = line.strip()
-        if line.startswith('Q') and '.' in line:
+
+        if line.startswith("Q") and "." in line:
             if current_question:
                 questions_list.append(current_question.strip())
-<<<<<<< HEAD
-            current_question = line.split('.', 1)[1].strip()
+            current_question = line.split(".", 1)[1].strip()
 
-        elif line.startswith('A') and '.' in line:
+        elif line.startswith("A") and "." in line:
             if current_answer:
                 answers_list.append(current_answer.strip())
-            current_answer = line.split('.', 1)[1].strip()
+            current_answer = line.split(".", 1)[1].strip()
 
         elif line:
             if current_answer:
@@ -272,27 +229,9 @@ def parse_questions_and_answers(generated_text):
             elif current_question:
                 current_question += " " + line
 
-=======
-            current_question = line.split('.', 1)[1].strip() if '.' in line else line
-        elif line.startswith('A') and '.' in line:
-            if current_answer:
-                answers_list.append(current_answer.strip())
-            current_answer = line.split('.', 1)[1].strip() if '.' in line else line
-        elif line and current_question:
-            if current_answer or line.startswith('A'):
-                current_answer += " " + line
-            else:
-                current_question += " " + line
-    
->>>>>>> e006eed1bcfc9cc9e5d9cab6c33fde6428640f1f
     if current_question:
         questions_list.append(current_question.strip())
     if current_answer:
         answers_list.append(current_answer.strip())
-<<<<<<< HEAD
 
     return questions_list, answers_list
-=======
-    
-    return questions_list, answers_list
->>>>>>> e006eed1bcfc9cc9e5d9cab6c33fde6428640f1f

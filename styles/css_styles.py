@@ -1,11 +1,8 @@
 import streamlit as st
 
 def apply_custom_css():
-<<<<<<< HEAD
     """Apply all custom CSS styling with glassmorphic bubble inputs"""
-=======
     """Apply all custom CSS styling"""
->>>>>>> e006eed1bcfc9cc9e5d9cab6c33fde6428640f1f
     st.markdown(
         """
         <style>
@@ -271,15 +268,12 @@ def apply_custom_css():
                 -webkit-text-fill-color: transparent;
             }
             
-<<<<<<< HEAD
             /* ========================================
                GLASSMORPHIC BUBBLE INPUTS - iOS STYLE
                ======================================== */
             
             /* Form labels - White and visible */
-=======
             /* CRITICAL FIX: Form labels - Make them VISIBLE */
->>>>>>> e006eed1bcfc9cc9e5d9cab6c33fde6428640f1f
             .stTextInput label,
             .stNumberInput label,
             .stSelectbox label,
@@ -291,7 +285,6 @@ def apply_custom_css():
                 margin-bottom: 0.75rem !important;
             }
             
-<<<<<<< HEAD
             /* GLASSMORPHIC TEXT & NUMBER INPUTS */
             .stTextInput > div > div > input,
             .stNumberInput > div > div > input {
@@ -408,7 +401,6 @@ def apply_custom_css():
             div[role="option"]:hover {
                 background: rgba(0, 217, 255, 0.15) !important;
                 color: #00d9ff !important;
-=======
             /* CRITICAL FIX: Text inputs - Full visibility */
             .stTextInput > div > div > input,
             .stNumberInput > div > div > input {
@@ -468,23 +460,19 @@ def apply_custom_css():
             
             div[role="option"]:hover {
                 background: rgba(0, 217, 255, 0.2) !important;
->>>>>>> e006eed1bcfc9cc9e5d9cab6c33fde6428640f1f
             }
             
             div[aria-selected="true"] {
                 background: rgba(0, 217, 255, 0.25) !important;
-<<<<<<< HEAD
                 color: #00d9ff !important;
                 font-weight: 700 !important;
             }
             
             /* Checkbox - Glassmorphic */
-=======
                 font-weight: 800 !important;
             }
             
             /* Checkbox */
->>>>>>> e006eed1bcfc9cc9e5d9cab6c33fde6428640f1f
             .stCheckbox > label {
                 display: flex !important;
                 align-items: center !important;
@@ -492,7 +480,6 @@ def apply_custom_css():
             }
             
             .stCheckbox > label > div:first-child {
-<<<<<<< HEAD
                 background: rgba(255, 255, 255, 0.08) !important;
                 backdrop-filter: blur(10px) !important;
                 border: 1.5px solid rgba(255, 255, 255, 0.2) !important;
@@ -505,13 +492,11 @@ def apply_custom_css():
             .stCheckbox > label > div:first-child:hover {
                 background: rgba(255, 255, 255, 0.12) !important;
                 border-color: rgba(0, 217, 255, 0.4) !important;
-=======
                 background: #ffffff !important;
                 border: 2px solid rgba(0, 217, 255, 0.4) !important;
                 border-radius: 6px !important;
                 width: 24px !important;
                 height: 24px !important;
->>>>>>> e006eed1bcfc9cc9e5d9cab6c33fde6428640f1f
             }
             
             .stCheckbox > label > div:last-child {
@@ -520,8 +505,6 @@ def apply_custom_css():
                 font-size: 1.1rem !important;
             }
             
-<<<<<<< HEAD
-=======
             /* Focus states */
             .stTextInput > div > div > input:focus,
             .stNumberInput > div > div > input:focus,
@@ -531,7 +514,6 @@ def apply_custom_css():
                 outline: none !important;
             }
             
->>>>>>> e006eed1bcfc9cc9e5d9cab6c33fde6428640f1f
             /* Messages */
             .stSuccess {
                 background: rgba(16, 185, 129, 0.1) !important;
@@ -566,7 +548,6 @@ def apply_custom_css():
                 font-weight: 700 !important;
                 padding: 1rem 2rem !important;
             }
-<<<<<<< HEAD
             
             /* Mobile Responsive - Complete */
             @media (max-width: 768px) {
@@ -803,8 +784,6 @@ def apply_custom_css():
                     font-size: 1.5rem;
                 }
             }
-=======
->>>>>>> e006eed1bcfc9cc9e5d9cab6c33fde6428640f1f
         </style>
         """,
         unsafe_allow_html=True
