@@ -1,4 +1,5 @@
 import streamlit as st
+<<<<<<< HEAD
 import time
 from utils.data import SUBJECTS, CHAPTERS
 from services.gemini_service import generate_worksheet_content, parse_questions_and_answers
@@ -8,6 +9,14 @@ from services.token_logger import log_token_usage, calculate_cost
 
 def render_worksheet_form():
     """Render worksheet generator form - Clean UI without token display"""
+=======
+from utils.data import SUBJECTS, CHAPTERS
+from services.gemini_service import generate_worksheet_content, parse_questions_and_answers
+from services.pdf_service import create_worksheet_pdf
+
+def render_worksheet_form():
+    """Render worksheet generator form with proper spacing"""
+>>>>>>> e006eed1bcfc9cc9e5d9cab6c33fde6428640f1f
     
     # Add top margin to avoid header overlap
     st.markdown("<div style='margin-top: 120px;'></div>", unsafe_allow_html=True)
@@ -29,6 +38,7 @@ def render_worksheet_form():
             )
         
         with col2:
+<<<<<<< HEAD
             # Subject - Dropdown with search capability
             subject = st.selectbox(
                 "Subject",
@@ -67,6 +77,20 @@ def render_worksheet_form():
                     label_visibility="collapsed"
                 )
                 chapter = chapter_custom if chapter_custom else chapter_list[0]
+=======
+            subject = st.selectbox(
+                "Subject",
+                SUBJECTS,
+                key="subject_select"
+            )
+        
+        with col3:
+            chapter = st.selectbox(
+                "Chapter",
+                CHAPTERS.get(subject, ["General"]),
+                key="chapter_select"
+            )
+>>>>>>> e006eed1bcfc9cc9e5d9cab6c33fde6428640f1f
         
         # Add spacing between rows
         st.markdown("<div style='margin: 2rem 0;'></div>", unsafe_allow_html=True)
@@ -82,12 +106,21 @@ def render_worksheet_form():
             )
         
         with col5:
+<<<<<<< HEAD
             # Number of questions - Dropdown style
             num_questions = st.selectbox(
                 "Number of Questions",
                 list(range(5, 51, 5)),  # 5, 10, 15, ... 50
                 index=1,  # Default to 10
                 key="num_questions_select"
+=======
+            num_questions = st.number_input(
+                "Number of Questions",
+                min_value=1,
+                max_value=100,
+                value=10,
+                key="num_questions_input"
+>>>>>>> e006eed1bcfc9cc9e5d9cab6c33fde6428640f1f
             )
         
         with col6:
@@ -98,6 +131,7 @@ def render_worksheet_form():
         # Add spacing
         st.markdown("<div style='margin: 2rem 0;'></div>", unsafe_allow_html=True)
         
+<<<<<<< HEAD
         # Row 3: PDF Name (full width with BLACK text)
         pdf_name = st.text_input(
             "Enter PDF Name",
@@ -105,11 +139,20 @@ def render_worksheet_form():
             placeholder="Enter the name for your PDF file",
             key="pdf_name_input",
             help="This is the filename of your downloaded PDF"
+=======
+        # Row 3: PDF Header/Title (full width)
+        pdf_header = st.text_input(
+            "Enter PDF Header/Title",
+            value="Infinity Learn Sri Chaitanya",
+            placeholder="Your institute name or worksheet title",
+            key="pdf_header_input"
+>>>>>>> e006eed1bcfc9cc9e5d9cab6c33fde6428640f1f
         )
         
         # Add spacing before button
         st.markdown("<div style='margin: 2.5rem 0;'></div>", unsafe_allow_html=True)
         
+<<<<<<< HEAD
         # Submit button with custom styling
         st.markdown("""
         <style>
@@ -144,11 +187,16 @@ def render_worksheet_form():
         """, unsafe_allow_html=True)
         
         submitted = st.form_submit_button("🚀 Generate Worksheet", use_container_width=True)
+=======
+        # Submit button
+        submitted = st.form_submit_button("Generate Worksheet", use_container_width=True)
+>>>>>>> e006eed1bcfc9cc9e5d9cab6c33fde6428640f1f
     
     # Add bottom spacing
     st.markdown("<div style='margin-bottom: 5rem;'></div>", unsafe_allow_html=True)
     
     if submitted:
+<<<<<<< HEAD
         # ANALYTICS: Track form button click (Button 2)
         track_event("generate_form_submitted", {
             "grade": grade,
@@ -254,3 +302,47 @@ def render_worksheet_form():
             progress_container.empty()
             st.error(f"❌ Error: {str(e)}")
             st.info("💡 Please verify your Gemini API key and ensure you have access to the Gemini API.")
+=======
+        with st.spinner("Generating your AI-powered worksheet..."):
+            try:
+                # Generate content using Gemini
+                generated_text = generate_worksheet_content(
+                    grade, subject, chapter, difficulty, num_questions
+                )
+                
+                # Parse questions and answers
+                questions_list, answers_list = parse_questions_and_answers(generated_text)
+                
+                # Create PDF
+                pdf_output = create_worksheet_pdf(
+                    pdf_header, subject, chapter, grade, difficulty,
+                    questions_list, answers_list, include_answers
+                )
+                
+                st.success(f"✅ Worksheet with {len(questions_list)} AI-generated questions created successfully!")
+                
+                # Preview section
+                with st.expander("📖 Preview Questions"):
+                    for idx, q in enumerate(questions_list, 1):
+                        st.markdown(f"**Q{idx}.** {q}")
+                        if include_answers and idx <= len(answers_list):
+                            st.markdown(f"*💡 Answer:* {answers_list[idx-1]}")
+                        st.markdown("---")
+                
+                # Clean filename for download
+                clean_filename = f"{subject}_{chapter}_Worksheet_{grade}_{difficulty}"
+                clean_filename = clean_filename.replace(' ', '_')
+                
+                # Download button
+                st.download_button(
+                    label="📥 Download Worksheet PDF",
+                    data=pdf_output,
+                    file_name=f"{clean_filename}.pdf",
+                    mime="application/pdf",
+                    use_container_width=True
+                )
+                
+            except Exception as e:
+                st.error(f"❌ Error: {str(e)}")
+                st.info("💡 Please verify your Gemini API key and ensure you have access to the Gemini API.")
+>>>>>>> e006eed1bcfc9cc9e5d9cab6c33fde6428640f1f

@@ -1,7 +1,10 @@
 import streamlit as st
 import os
 from dotenv import load_dotenv
+<<<<<<< HEAD
 load_dotenv()
+=======
+>>>>>>> e006eed1bcfc9cc9e5d9cab6c33fde6428640f1f
 
 def configure_page():
     """Configure Streamlit page settings"""
@@ -22,6 +25,7 @@ def load_api_key():
     
     return api_key.strip()
 
+<<<<<<< HEAD
 # ===========================
 # GEMINI MODEL CONFIGURATION
 # ===========================
@@ -90,5 +94,7 @@ ADMIN_PASSWORD = "admin123"  # CHANGE THIS IN PRODUCTION!
 TOKEN_LOG_DB = "token_logs.db"
 TOKEN_LOG_CSV = "logs/token_logs.csv"
 
+=======
+>>>>>>> e006eed1bcfc9cc9e5d9cab6c33fde6428640f1f
 # User location
 USER_LOCATION = "Bengaluru, Karnataka, IN"
