@@ -1,14 +1,41 @@
 import streamlit as st
 import time
+from datetime import datetime
 from utils.data import SUBJECTS, CHAPTERS
-from services.gemini_service import generate_worksheet_content, parse_questions_and_answers
+from services.gemini_service import generate_worksheet_content, parse_questions_and_answers, get_session_id, langfuse, langfuse_enabled
 from services.pdf_service import create_worksheet_pdf
 from services.analytics_service import track_event
 from services.token_logger import log_token_usage, calculate_cost
 
 
+def log_langfuse_event(event_name, metadata):
+    """Log event to Langfuse with version compatibility"""
+    if not langfuse_enabled or not langfuse:
+        return
+    
+    try:
+        # Try Langfuse v3 API
+        trace = langfuse.trace(
+            name=event_name,
+            user_id=get_session_id(),
+            metadata=metadata
+        )
+        print(f"✅ Langfuse: {event_name} tracked")
+    except (AttributeError, TypeError):
+        # Fallback to Langfuse v2 API
+        try:
+            langfuse.log(
+                name=event_name,
+                user_id=get_session_id(),
+                properties=metadata
+            )
+            print(f"✅ Langfuse v2: {event_name} tracked")
+        except Exception as e:
+            print(f"⚠️ Langfuse event logging failed: {e}")
+
+
 def render_worksheet_form():
-    """Render worksheet generator form with clean UI"""
+    """Render worksheet generator form - All issues fixed"""
 
     st.markdown("<div style='margin-top: 120px;'></div>", unsafe_allow_html=True)
     st.markdown("<h2 class='form-title'>Create Your AI Worksheet</h2>", unsafe_allow_html=True)
@@ -17,9 +44,9 @@ def render_worksheet_form():
     # ------------------ FORM START ------------------
     with st.form("worksheet_form"):
 
+        # Row 1: Grade, Subject, Chapter (FIXED: No duplicates)
         col1, col2, col3 = st.columns(3)
 
-        # ------------------ GRADE ------------------
         with col1:
             grade = st.selectbox(
                 "Grade/Class",
@@ -27,25 +54,26 @@ def render_worksheet_form():
                 key="grade_select"
             )
 
-        # ------------------ SUBJECT ------------------
         with col2:
             subject = st.selectbox(
                 "Subject",
                 SUBJECTS,
-                key="subject_select"
+                key="subject_select",
+                help="Type to search subjects"
             )
 
-        # ------------------ CHAPTER ------------------
         with col3:
+            chapter_list = CHAPTERS.get(subject, ["General Topics"])
             chapter = st.selectbox(
                 "Chapter",
-                CHAPTERS.get(subject, ["General"]),
-                key="chapter_select"
+                chapter_list,
+                key="chapter_select",
+                help="Chapters based on selected subject"
             )
 
         st.markdown("<div style='margin: 2rem 0;'></div>", unsafe_allow_html=True)
 
-        # ------------------ DIFFICULTY / QUESTIONS ------------------
+        # Row 2: Difficulty, Questions, Checkbox
         col4, col5, col6 = st.columns(3)
 
         with col4:
@@ -58,7 +86,8 @@ def render_worksheet_form():
         with col5:
             num_questions = st.selectbox(
                 "Number of Questions",
-                [5, 10, 15, 20, 25],
+                [5, 10, 15, 20, 25, 30],
+                index=1,
                 key="num_questions_select"
             )
 
@@ -68,33 +97,61 @@ def render_worksheet_form():
 
         st.markdown("<div style='margin: 2rem 0;'></div>", unsafe_allow_html=True)
 
-        # ------------------ PDF NAME ------------------
+        # Row 3: PDF Name
         pdf_name = st.text_input(
             "Enter PDF Name",
-            value="Infinity Learn Worksheet",
-            placeholder="Enter file name",
-            key="pdf_name_input"
-        )
-
-        # ------------------ PDF HEADER ------------------
-        pdf_header = st.text_input(
-            "Enter PDF Header/Title",
-            value="Infinity Learn by Sri Chaitanya",
-            placeholder="Worksheet Header",
-            key="pdf_header_input"
+            value="Infinity_Learn_Worksheet",
+            placeholder="Enter filename for download",
+            key="pdf_name_input",
+            help="Name of the downloaded PDF file"
         )
 
         st.markdown("<div style='margin: 2.5rem 0;'></div>", unsafe_allow_html=True)
 
+        # Custom button styling
+        st.markdown("""
+        <style>
+            div[data-testid="stFormSubmitButton"] button {
+                background: #000000 !important;
+                color: #ffffff !important;
+                border: 2px solid rgba(0, 217, 255, 0.3) !important;
+                border-radius: 50px !important;
+                font-weight: 800 !important;
+                font-size: 1.2rem !important;
+                padding: 1.2rem 3rem !important;
+                transition: all 0.3s ease !important;
+                box-shadow: 0 10px 40px rgba(0, 217, 255, 0.4) !important;
+                text-transform: uppercase !important;
+                letter-spacing: 1px !important;
+            }
+            
+            div[data-testid="stFormSubmitButton"] button:hover {
+                background: #1a1a1a !important;
+                border-color: rgba(0, 217, 255, 0.6) !important;
+                transform: translateY(-3px) !important;
+                box-shadow: 0 15px 50px rgba(0, 217, 255, 0.6) !important;
+            }
+        </style>
+        """, unsafe_allow_html=True)
+
         submitted = st.form_submit_button("🚀 Generate Worksheet", use_container_width=True)
 
-    # ------------------ FORM END ------------------
-
-    # Bottom spacing
     st.markdown("<div style='margin-bottom: 5rem;'></div>", unsafe_allow_html=True)
 
     if submitted:
+        
+        # LANGFUSE EVENT: Form button clicked
+        log_langfuse_event("click_generate_worksheet_final", {
+            "button": "form_submit",
+            "timestamp": datetime.now().isoformat(),
+            "grade": grade,
+            "subject": subject,
+            "chapter": chapter,
+            "difficulty": difficulty,
+            "num_questions": num_questions
+        })
 
+        # Analytics tracking
         track_event("generate_form_submitted", {
             "grade": grade,
             "subject": subject,
@@ -103,29 +160,37 @@ def render_worksheet_form():
             "num_questions": num_questions
         })
 
-        # LOADING ICON
+        # LOADING ANIMATION
         progress_container = st.empty()
         progress_container.markdown("""
-        <div style='text-align:center; padding: 2rem;'>
+        <div style='text-align:center; padding: 3rem;'>
             <div class='loader'></div>
-            <p style='color:#00d9ff; font-size:1.2rem;'>✨ AI is generating your worksheet...</p>
+            <p style='color:#00d9ff; font-size:1.3rem; margin-top:1.5rem; font-weight:700;'>
+                ✨ AI is generating your worksheet...
+            </p>
+            <p style='color:#8b92b0; font-size:0.9rem; margin-top:0.5rem;'>
+                Please wait, this may take 10-30 seconds
+            </p>
         </div>
         <style>
             .loader {
                 margin: auto;
-                border: 8px solid rgba(0,217,255,0.1);
-                border-top: 8px solid #00d9ff;
+                border: 10px solid rgba(0,217,255,0.1);
+                border-top: 10px solid #00d9ff;
                 border-radius: 50%;
-                width: 60px;
-                height: 60px;
+                width: 80px;
+                height: 80px;
                 animation: spin 1s linear infinite;
             }
-            @keyframes spin { 0% {transform: rotate(0);} 100% {transform: rotate(360);} }
+            @keyframes spin { 
+                0% {transform: rotate(0deg);} 
+                100% {transform: rotate(360deg);} 
+            }
         </style>
         """, unsafe_allow_html=True)
 
         try:
-            # ------------------ GENERATE USING GEMINI ------------------
+            # Generate using Gemini
             generated_text, token_data = generate_worksheet_content(
                 grade, subject, chapter, difficulty, num_questions
             )
@@ -145,10 +210,19 @@ def render_worksheet_form():
 
             progress_container.empty()
 
-            # ------------------ PARSE QUESTIONS ------------------
+            # Parse questions
             questions, answers = parse_questions_and_answers(generated_text)
 
-            # ------------------ GENERATE PDF ------------------
+            # Validation: Ensure correct count
+            if len(questions) < num_questions:
+                st.warning(f"⚠️ Generated {len(questions)} questions instead of {num_questions}")
+            
+            # Trim if too many
+            questions = questions[:num_questions]
+            answers = answers[:num_questions]
+
+            # Generate PDF
+            pdf_header = "Infinity Learn by Sri Chaitanya"
             pdf_output = create_worksheet_pdf(
                 pdf_header,
                 subject,
@@ -160,9 +234,9 @@ def render_worksheet_form():
                 include_answers
             )
 
-            st.success(f"✅ Worksheet with {len(questions)} questions created!")
+            st.success(f"✅ Worksheet with {len(questions)} questions created successfully!")
 
-            # ------------------ PREVIEW ------------------
+            # Preview
             with st.expander("📖 Preview Questions"):
                 for idx, q in enumerate(questions, 1):
                     st.markdown(f"**Q{idx}.** {q}")

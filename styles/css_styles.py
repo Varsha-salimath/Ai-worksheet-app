@@ -784,6 +784,50 @@ def apply_custom_css():
                     font-size: 1.5rem;
                 }
             }
+            # Add this to the end of your apply_custom_css() function in styles/css_styles.py
+/* ==========================================
+   MOBILE RESPONSIVENESS - FORM INPUTS
+   ========================================== */
+
+@media (max-width: 768px) {
+    /* Form inputs smaller on mobile */
+    .stSelectbox > div > div,
+    .stTextInput > div > div > input {
+        font-size: 0.95rem !important;
+        padding: 0.9rem 1rem !important;
+        min-height: 45px !important;
+    }
+    
+    /* Form columns stack vertically */
+    .row-widget.stHorizontal {
+        flex-direction: column !important;
+    }
+    
+    /* Form title smaller */
+    .form-title {
+        font-size: 1.6rem !important;
+    }
+    
+    /* Button full width on mobile */
+    div[data-testid="stFormSubmitButton"] button {
+        width: 100% !important;
+        font-size: 1rem !important;
+        padding: 1rem 2rem !important;
+    }
+}
+
+@media (max-width: 480px) {
+    /* Extra small devices */
+    .form-title {
+        font-size: 1.4rem !important;
+    }
+    
+    .stSelectbox > div > div,
+    .stTextInput > div > div > input {
+        font-size: 0.9rem !important;
+        padding: 0.8rem 0.9rem !important;
+    }
+}
         </style>
         """,
         unsafe_allow_html=True

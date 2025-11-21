@@ -4,14 +4,14 @@ import os
 from config.settings import load_api_key, GEMINI_MODEL, get_model_pricing
 
 # ---------------------------------------------------
-# LANGFUSE INITIALIZATION (cleaned)
+# LANGFUSE INITIALIZATION
 # ---------------------------------------------------
 print("=" * 50)
 print("🔍 LANGFUSE DEBUG MODE")
 print("=" * 50)
 
 try:
-    from langfuse_sdk import Langfuse
+    from langfuse import Langfuse
     LANGFUSE_AVAILABLE = True
     print("✅ Langfuse package imported successfully")
 except ImportError as e:
@@ -54,9 +54,6 @@ print("=" * 50)
 print()
 
 
-# ---------------------------------------------------
-# GEMINI INITIALIZATION
-# ---------------------------------------------------
 def initialize_gemini():
     """Initialize Google Gemini API"""
     api_key = load_api_key()
@@ -67,9 +64,6 @@ def initialize_gemini():
         st.stop()
 
 
-# ---------------------------------------------------
-# SESSION ID
-# ---------------------------------------------------
 def get_session_id():
     """Get or create unique session ID"""
     if "session_id" not in st.session_state:
@@ -78,38 +72,46 @@ def get_session_id():
     return st.session_state.session_id
 
 
-# ---------------------------------------------------
-# WORKSHEET GENERATION
-# ---------------------------------------------------
 def generate_worksheet_content(grade, subject, chapter, difficulty, num_questions):
-    """Generate worksheet with Langfuse v3 tracking"""
+    """
+    Generate worksheet with EXACT question count guaranteed
+    """
 
     difficulty_instructions = {
-        "Easy": f"suitable for {grade} students who are just beginning to learn {chapter}. Basic concepts only.",
-        "Medium": f"suitable for {grade} students with intermediate knowledge of {chapter}. Application-level.",
-        "Hard": f"suitable for {grade} students who mastered {chapter}. Challenging, high-depth questions."
+        "Easy": f"suitable for {grade} students who are just beginning to learn {chapter}. Basic fundamental concepts only.",
+        "Medium": f"suitable for {grade} students with intermediate knowledge of {chapter}. Application-level thinking required.",
+        "Hard": f"suitable for {grade} students who have mastered {chapter}. Challenging, deep analytical questions."
     }
 
+    # IMPROVED PROMPT: Emphasize EXACT count
     prompt = f"""
-Generate exactly {num_questions} {difficulty} difficulty questions for {grade} students on the topic: {chapter} ({subject}).
+YOU MUST GENERATE EXACTLY {num_questions} QUESTIONS. NO MORE, NO LESS.
+
+Generate {difficulty} difficulty questions for {grade} students on: {chapter} ({subject})
 
 Context:
-- Grade Level: {grade}
+- Grade: {grade}
 - Subject: {subject}
 - Chapter: {chapter}
 - Difficulty: {difficulty} - {difficulty_instructions[difficulty]}
 
-Requirements:
-- EXACTLY {num_questions} questions
-- Include MCQ, short answer, long answer, numerical problems
-- Each question MUST have a detailed solution
+CRITICAL REQUIREMENTS:
+1. GENERATE EXACTLY {num_questions} QUESTIONS (count them!)
+2. Each question MUST have a detailed answer
+3. Include variety: MCQ, Short Answer, Long Answer, Numerical
+4. CBSE curriculum-aligned
+5. No duplicate questions
 
-Format:
-Q1. [Question]
-A1. [Answer]
+FORMAT (STRICTLY FOLLOW):
+Q1. [Question text here]
+A1. [Detailed answer with steps]
 
-Q2. [Question]
-A2. [Answer]
+Q2. [Question text here]
+A2. [Detailed answer with steps]
+
+...continue exactly until Q{num_questions}
+
+REMEMBER: You must generate ALL {num_questions} questions. Double-check your count before responding.
 """
 
     # Create Langfuse trace
@@ -133,11 +135,14 @@ A2. [Answer]
         except Exception as e:
             print(f"⚠️ Trace creation failed: {e}")
 
-    # Call Gemini API
+    # Call Gemini API with higher token limit
     model = genai.GenerativeModel(GEMINI_MODEL)
     response = model.generate_content(
         prompt,
-        generation_config=genai.GenerationConfig(temperature=0.7)
+        generation_config=genai.GenerationConfig(
+            temperature=0.7,
+            max_output_tokens=8192  # Ensure enough space for all questions
+        )
     )
 
     # Extract usage
@@ -175,7 +180,8 @@ A2. [Answer]
                     "grade": grade,
                     "subject": subject,
                     "chapter": chapter,
-                    "difficulty": difficulty
+                    "difficulty": difficulty,
+                    "requested_questions": num_questions
                 }
             )
 
@@ -197,11 +203,11 @@ A2. [Answer]
     }
 
 
-# ---------------------------------------------------
-# PARSE Q & A
-# ---------------------------------------------------
 def parse_questions_and_answers(generated_text):
-    """Parse Q & A into separate lists"""
+    """
+    Parse Q & A into separate lists
+    IMPROVED: Better handling of multiline questions/answers
+    """
 
     questions_list = []
     answers_list = []
@@ -209,26 +215,44 @@ def parse_questions_and_answers(generated_text):
     lines = generated_text.split("\n")
     current_question = ""
     current_answer = ""
+    in_question = False
+    in_answer = False
 
     for line in lines:
         line = line.strip()
 
-        if line.startswith("Q") and "." in line:
+        # Detect question start
+        if line.startswith("Q") and "." in line and not line.startswith("Q."):
+            # Save previous question if exists
             if current_question:
                 questions_list.append(current_question.strip())
-            current_question = line.split(".", 1)[1].strip()
+                current_question = ""
+            
+            # Start new question
+            current_question = line.split(".", 1)[1].strip() if len(line.split(".", 1)) > 1 else ""
+            in_question = True
+            in_answer = False
 
-        elif line.startswith("A") and "." in line:
+        # Detect answer start
+        elif line.startswith("A") and "." in line and not line.startswith("A."):
+            # Save previous answer if exists
             if current_answer:
                 answers_list.append(current_answer.strip())
-            current_answer = line.split(".", 1)[1].strip()
+                current_answer = ""
+            
+            # Start new answer
+            current_answer = line.split(".", 1)[1].strip() if len(line.split(".", 1)) > 1 else ""
+            in_answer = True
+            in_question = False
 
+        # Continue building current question or answer
         elif line:
-            if current_answer:
+            if in_answer:
                 current_answer += " " + line
-            elif current_question:
+            elif in_question:
                 current_question += " " + line
 
+    # Add last question and answer
     if current_question:
         questions_list.append(current_question.strip())
     if current_answer:

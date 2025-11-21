@@ -1,7 +1,8 @@
 import streamlit as st
 import base64
+from datetime import datetime
 from config.settings import configure_page
-from services.gemini_service import initialize_gemini
+from services.gemini_service import initialize_gemini, get_session_id, langfuse, langfuse_enabled
 from services.analytics_service import inject_analytics_script, track_event
 from styles.css_styles import apply_custom_css
 from components.navigation import render_navigation
@@ -30,13 +31,38 @@ if "show_admin" not in st.session_state:
 if "button_clicked" not in st.session_state:
     st.session_state.button_clicked = False
 
+# Helper function for Langfuse event logging (compatible with v2 and v3)
+def log_langfuse_event(event_name, metadata):
+    """Log event to Langfuse with version compatibility"""
+    if not langfuse_enabled or not langfuse:
+        return
+    
+    try:
+        # Try Langfuse v3 API
+        trace = langfuse.trace(
+            name=event_name,
+            user_id=get_session_id(),
+            metadata=metadata
+        )
+        print(f"✅ Langfuse v3: {event_name} tracked")
+    except (AttributeError, TypeError):
+        # Fallback to Langfuse v2 API
+        try:
+            langfuse.log(
+                name=event_name,
+                user_id=get_session_id(),
+                properties=metadata
+            )
+            print(f"✅ Langfuse v2: {event_name} tracked")
+        except Exception as e:
+            print(f"⚠️ Langfuse logging failed: {e}")
+
 # Helper function to load logo
 def get_base64_image(image_path):
     try:
         with open(image_path, "rb") as img_file:
             return base64.b64encode(img_file.read()).decode()
     except Exception as e:
-        st.warning(f"Logo not found: {e}")
         return None
 
 # Load logo
@@ -82,15 +108,25 @@ elif st.session_state.show_generator:
 else:
     render_hero_section()
     
-    # Main CTA button
+    # Main CTA button with Langfuse tracking
     st.markdown("<div class='button-center'>", unsafe_allow_html=True)
     col1, col2, col3 = st.columns([1, 1, 1])
     with col2:
         if st.button("Generate Worksheets", key="start_btn"):
+            # LANGFUSE EVENT: Landing page button clicked
+            log_langfuse_event("click_generate_worksheet_landing_page", {
+                "button": "landing_page_cta",
+                "timestamp": datetime.now().isoformat(),
+                "source": "hero_section",
+                "page": "landing"
+            })
+            
+            # Analytics tracking
             track_event("generate_main_clicked", {
                 "source": "hero_section",
                 "page": "landing"
             })
+            
             st.session_state.show_generator = True
             st.session_state.button_clicked = True
             st.rerun()
