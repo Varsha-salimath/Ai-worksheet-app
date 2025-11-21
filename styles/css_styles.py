@@ -255,62 +255,145 @@ def apply_custom_css():
             }
             
             /* ========================================
-               BUTTONS - STICKY & STYLED
+               BUTTONS - VISIBLE & STYLED
                ======================================== */
             
-            .stButton > button {
-    background: #ffffff !important;   /* Light background */
-    color: #000000 !important;       /* Black text — always visible */
-    border: 2px solid #00d9ff !important;
-    border-radius: 50px !important;
-    font-weight: 700 !important;
-    font-size: 1.1rem !important;
-    padding: 1rem 3rem !important;
-    transition: all 0.3s ease !important;
-    box-shadow: 0 10px 30px rgba(0, 217, 255, 0.3) !important;
-    width: 100% !important;
-    max-width: 500px !important;
-    display: block !important;
-    margin: 2rem auto !important;
-    cursor: pointer !important;
-}
-
-.stButton > button:hover {
-    background: #00d9ff !important;
-    color: #000000 !important;  /* or #ffffff if you prefer white on hover */
-    transform: translateY(-3px) !important;
-    box-shadow: 0 15px 40px rgba(0, 217, 255, 0.5) !important;
-}
+            /* Regular buttons - SOLID BLUE WITH WHITE TEXT */
+            .stButton > button,
+            .stDownloadButton > button {
+                background: linear-gradient(135deg, #16a34a 0%, #15803d 100%) !important;
+                color: #ffffff !important;
+                border: none !important;
+                border-radius: 50px !important;
+                font-weight: 700 !important;
+                font-size: 1.1rem !important;
+                padding: 1rem 3rem !important;
+                transition: all 0.3s ease !important;
+                box-shadow: 0 10px 30px rgba(37, 99, 235, 0.4) !important;
+                width: 100% !important;
+                max-width: 500px !important;
+                display: block !important;
+                margin: 2rem auto !important;
+                cursor: pointer !important;
+            }
+            
+            .stButton > button:hover,
+            .stDownloadButton > button:hover {
+                background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%) !important;
+                transform: translateY(-3px) !important;
+                box-shadow: 0 15px 40px rgba(37, 99, 235, 0.6) !important;
+                color: #ffffff !important;
+            }
             
             /* Make sure button is visible */
-            .stButton {
+            .stButton,
+            .stDownloadButton {
                 display: block !important;
                 text-align: center !important;
                 margin: 2rem 0 !important;
                 padding-bottom: 2rem !important;
             }
             
+            /* Loading Animation Container */
+            .loading-animation {
+                text-align: center;
+                padding: 2rem;
+                margin: 2rem 0;
+            }
+            
+            .sparkle-container {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                gap: 1rem;
+                margin: 2rem 0;
+            }
+            
+            .sparkle-text {
+                color: #2563eb;
+                font-size: 1.3rem;
+                font-weight: 700;
+                animation: pulse 1.5s ease-in-out infinite;
+            }
+            
+            .sparkle {
+                display: inline-block;
+                font-size: 2rem;
+                animation: sparkle 1.5s ease-in-out infinite;
+            }
+            
+            @keyframes sparkle {
+                0%, 100% {
+                    transform: scale(1) rotate(0deg);
+                    opacity: 1;
+                }
+                50% {
+                    transform: scale(1.3) rotate(180deg);
+                    opacity: 0.7;
+                }
+            }
+            
+            @keyframes pulse {
+                0%, 100% {
+                    opacity: 1;
+                }
+                50% {
+                    opacity: 0.6;
+                }
+            }
+            
+            /* Falling Stars Animation */
+            .falling-stars {
+                position: relative;
+                width: 100%;
+                height: 100px;
+                overflow: hidden;
+            }
+            
+            .star {
+                position: absolute;
+                width: 20px;
+                height: 20px;
+                font-size: 1.5rem;
+                animation: fall 2s linear infinite;
+            }
+            
+            .star:nth-child(1) { left: 10%; animation-delay: 0s; }
+            .star:nth-child(2) { left: 30%; animation-delay: 0.5s; }
+            .star:nth-child(3) { left: 50%; animation-delay: 1s; }
+            .star:nth-child(4) { left: 70%; animation-delay: 1.5s; }
+            .star:nth-child(5) { left: 90%; animation-delay: 0.8s; }
+            
+            @keyframes fall {
+                0% {
+                    top: -20px;
+                    opacity: 1;
+                }
+                100% {
+                    top: 100px;
+                    opacity: 0;
+                }
+            }
+            
             /* Sticky button container */
+            .sticky-button-container {
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                background: rgba(10, 14, 39, 0.98);
+                backdrop-filter: blur(20px);
+                border-top: 1px solid rgba(255, 255, 255, 0.08);
+                padding: 1.5rem 4rem;
+                z-index: 999;
+                box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.3);
+            }
+            
             .sticky-button-container .stButton > button {
-    background: #000000 !important;
-    color: #ffffff !important;
-    max-width: 400px;
-    margin: 0 auto;
-    display: block;
-
-    /* REMOVE WHITE BOX / OUTLINE / GLOW */
-    border: none !important;
-    outline: none !important;
-    box-shadow: none !important;
-}
-
-.sticky-button-container .stButton > button:hover {
-    background: #111111 !important; /* Slight hover darkening */
-    border: none !important;
-    outline: none !important;
-    box-shadow: none !important;
-}
-
+                max-width: 400px;
+                margin: 0 auto;
+                display: block;
+            }
             
             /* ========================================
                INPUT FIELDS - WHITE BG, BLACK TEXT
@@ -419,10 +502,9 @@ def apply_custom_css():
             }
             
             div[role="option"]:hover {
-    background: #000000 !important;   /* BLACK BACKGROUND */
-    color: #ffffff !important;        /* WHITE TEXT ON HOVER */
-}
-
+                background: rgba(0, 217, 255, 0.1) !important;
+                color: #000000 !important;
+            }
             
             /* Selected option in dropdown */
             div[role="option"][aria-selected="true"] {
