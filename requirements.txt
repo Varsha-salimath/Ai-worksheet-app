@@ -4,4 +4,4 @@ python-dotenv==1.0.1
 reportlab==4.0.9
 pandas==2.2.3
 fpdf2==2.7.8
-langfuse==3.9.0
+langfuse==2.51.3
