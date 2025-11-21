@@ -213,7 +213,7 @@ Email: `salimathvarsha7@gmail.com`
 InfinityLearn EdTech
 
 ---
-##💛 Author
+💛 Author
 
 Varsha Salimath
 
