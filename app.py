@@ -11,6 +11,7 @@ from components.features import render_features_section
 from components.footer import render_footer
 from components.worksheet_form import render_worksheet_form
 from dotenv import load_dotenv
+from components.footer import render_footer
 load_dotenv()
 
 # Initialize

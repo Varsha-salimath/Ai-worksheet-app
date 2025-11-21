@@ -15,6 +15,10 @@ def render_footer():
                 Exploring the universe of education, one worksheet at a time
             </p>
         </div>
+        <div class='footer'>
+                <span class='footer-warning-icon'>⚠️</span>
+                <span>Note: Worksheets are AI-generated and may contain inaccuracies. Please review content before use.</span>
+            </div>
         """,
         unsafe_allow_html=True
     )

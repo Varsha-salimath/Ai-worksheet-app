@@ -1,8 +1,7 @@
 import streamlit as st
 
 def apply_custom_css():
-    """Apply all custom CSS styling with glassmorphic bubble inputs"""
-    """Apply all custom CSS styling"""
+    """Apply all custom CSS styling with clean inputs and sticky buttons"""
     st.markdown(
         """
         <style>
@@ -157,6 +156,11 @@ def apply_custom_css():
                 margin: 2rem 0;
             }
             
+            .button-center .stButton > button {
+                max-width: 400px !important;
+                min-width: 280px !important;
+            }
+            
             /* Features Section */
             .features-section {
                 padding: 5rem 4rem;
@@ -239,24 +243,6 @@ def apply_custom_css():
                 line-height: 1.6;
             }
             
-            /* Buttons */
-            .stButton > button {
-                background: linear-gradient(135deg, #00d9ff 0%, #a855f7 100%) !important;
-                color: #ffffff !important;
-                border: none !important;
-                border-radius: 50px !important;
-                font-weight: 700 !important;
-                font-size: 1.1rem !important;
-                padding: 1rem 3rem !important;
-                transition: all 0.3s ease !important;
-                box-shadow: 0 10px 30px rgba(0, 217, 255, 0.3) !important;
-            }
-            
-            .stButton > button:hover {
-                transform: translateY(-3px) !important;
-                box-shadow: 0 15px 40px rgba(0, 217, 255, 0.5) !important;
-            }
-            
             /* Form Title */
             .form-title {
                 font-size: 2.5rem;
@@ -269,14 +255,72 @@ def apply_custom_css():
             }
             
             /* ========================================
-               GLASSMORPHIC BUBBLE INPUTS - iOS STYLE
+               BUTTONS - STICKY & STYLED
                ======================================== */
             
-            /* Form labels - White and visible */
-            /* CRITICAL FIX: Form labels - Make them VISIBLE */
+            .stButton > button {
+    background: #ffffff !important;   /* Light background */
+    color: #000000 !important;       /* Black text — always visible */
+    border: 2px solid #00d9ff !important;
+    border-radius: 50px !important;
+    font-weight: 700 !important;
+    font-size: 1.1rem !important;
+    padding: 1rem 3rem !important;
+    transition: all 0.3s ease !important;
+    box-shadow: 0 10px 30px rgba(0, 217, 255, 0.3) !important;
+    width: 100% !important;
+    max-width: 500px !important;
+    display: block !important;
+    margin: 2rem auto !important;
+    cursor: pointer !important;
+}
+
+.stButton > button:hover {
+    background: #00d9ff !important;
+    color: #000000 !important;  /* or #ffffff if you prefer white on hover */
+    transform: translateY(-3px) !important;
+    box-shadow: 0 15px 40px rgba(0, 217, 255, 0.5) !important;
+}
+            
+            /* Make sure button is visible */
+            .stButton {
+                display: block !important;
+                text-align: center !important;
+                margin: 2rem 0 !important;
+                padding-bottom: 2rem !important;
+            }
+            
+            /* Sticky button container */
+            .sticky-button-container .stButton > button {
+    background: #000000 !important;
+    color: #ffffff !important;
+    max-width: 400px;
+    margin: 0 auto;
+    display: block;
+
+    /* REMOVE WHITE BOX / OUTLINE / GLOW */
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+.sticky-button-container .stButton > button:hover {
+    background: #111111 !important; /* Slight hover darkening */
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+            
+            /* ========================================
+               INPUT FIELDS - WHITE BG, BLACK TEXT
+               ======================================== */
+            
+            /* LABELS → White, Bold */
             .stTextInput label,
             .stNumberInput label,
             .stSelectbox label,
+            .stTextArea label,
             .stCheckbox label {
                 color: #ffffff !important;
                 font-weight: 700 !important;
@@ -285,194 +329,108 @@ def apply_custom_css():
                 margin-bottom: 0.75rem !important;
             }
             
-            /* GLASSMORPHIC TEXT & NUMBER INPUTS */
+            /* TEXT & NUMBER INPUTS → White background + Black text */
             .stTextInput > div > div > input,
-            .stNumberInput > div > div > input {
-                background: rgba(255, 255, 255, 0.95) !important;
-                backdrop-filter: blur(20px) !important;
-                -webkit-backdrop-filter: blur(20px) !important;
-                border: 1.5px solid rgba(255, 255, 255, 0.2) !important;
-                border-radius: 25px !important;
+            .stNumberInput > div > div > input,
+            .stTextArea > div > div > textarea {
+                background: #ffffff !important;
+                border: 2px solid rgba(0, 217, 255, 0.4) !important;
+                border-radius: 12px !important;
                 color: #000000 !important;
-                font-size: 1.1rem !important;
-                font-weight: 700 !important;
-                padding: 1.2rem 1.8rem !important;
+                font-size: 1.05rem !important;
+                font-weight: 600 !important;
+                padding: 1.2rem 1.5rem !important;
                 min-height: 60px !important;
-                line-height: 1.5 !important;
-                box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1),
-                            inset 0 1px 2px rgba(255, 255, 255, 0.1) !important;
-                transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+                transition: all 0.3s ease !important;
             }
             
-            .stTextInput > div > div > input::placeholder {
-                color: rgba(0, 0, 0, 0.4) !important;
-                opacity: 1 !important;
+            /* Placeholder text → Grey */
+            .stTextInput > div > div > input::placeholder,
+            .stTextArea > div > div > textarea::placeholder {
+                color: #6b7280 !important;
+                font-weight: 500 !important;
             }
             
-            /* Hover effect - Glow */
-            .stTextInput > div > div > input:hover,
-            .stNumberInput > div > div > input:hover {
-                background: rgba(255, 255, 255, 1) !important;
-                border-color: rgba(0, 217, 255, 0.4) !important;
-                box-shadow: 0 8px 32px rgba(0, 217, 255, 0.2),
-                            inset 0 1px 2px rgba(255, 255, 255, 0.15) !important;
-            }
-            
-            /* Focus state - Bright glow */
+            /* FOCUS → Blue glow */
             .stTextInput > div > div > input:focus,
-            .stNumberInput > div > div > input:focus {
-                background: rgba(255, 255, 255, 1) !important;
-                border-color: rgba(0, 217, 255, 0.7) !important;
-                box-shadow: 0 0 0 4px rgba(0, 217, 255, 0.2),
-                            0 8px 32px rgba(0, 217, 255, 0.3),
-                            inset 0 1px 2px rgba(255, 255, 255, 0.2) !important;
+            .stNumberInput > div > div > input:focus,
+            .stTextArea > div > div > textarea:focus {
+                border-color: #00d9ff !important;
+                box-shadow: 0 0 0 4px rgba(0, 217, 255, 0.25) !important;
                 outline: none !important;
-                transform: translateY(-2px) !important;
             }
             
-            /* GLASSMORPHIC SELECTBOX */
-            div[data-baseweb="select"] {
-                background: transparent !important;
-            }
-            
+            /* SELECTBOX → White background + Black text - SMALLER SIZE */
             div[data-baseweb="select"] > div {
-                background: rgba(255, 255, 255, 0.08) !important;
-                backdrop-filter: blur(20px) !important;
-                -webkit-backdrop-filter: blur(20px) !important;
-                border: 1.5px solid rgba(255, 255, 255, 0.2) !important;
-                border-radius: 25px !important;
-                color: #ffffff !important;
-                padding: 1.2rem 1.8rem !important;
-                min-height: 60px !important;
+                background: #ffffff !important;
+                border-radius: 10px !important;
+                border: 2px solid rgba(0, 217, 255, 0.4) !important;
+                color: #000000 !important;
+                padding: 0.85rem 1.2rem !important;
+                min-height: 48px !important;
+                font-size: 0.95rem !important;
+                font-weight: 600 !important;
+                transition: all 0.3s ease !important;
                 display: flex !important;
                 align-items: center !important;
-                box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1),
-                            inset 0 1px 2px rgba(255, 255, 255, 0.1) !important;
-                transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
             }
             
-            div[data-baseweb="select"] span {
-                color: #ffffff !important;
+            /* Selectbox selected value text - ALL variations */
+            div[data-baseweb="select"] span,
+            div[data-baseweb="select"] div,
+            div[data-baseweb="select"] > div > div {
+                color: #000000 !important;
                 font-weight: 600 !important;
-                font-size: 1.1rem !important;
             }
             
-            div[data-baseweb="select"] svg {
-                color: rgba(255, 255, 255, 0.7) !important;
+            /* Selectbox dropdown arrow - make it visible */
+            div[data-baseweb="select"] svg,
+            div[data-baseweb="select"] svg path {
+                fill: #000000 !important;
+                color: #000000 !important;
+                stroke: #000000 !important;
             }
             
-            /* Selectbox hover */
-            div[data-baseweb="select"] > div:hover {
-                background: rgba(255, 255, 255, 0.12) !important;
-                border-color: rgba(0, 217, 255, 0.4) !important;
-                box-shadow: 0 8px 32px rgba(0, 217, 255, 0.2),
-                            inset 0 1px 2px rgba(255, 255, 255, 0.15) !important;
+            /* Selectbox placeholder */
+            div[data-baseweb="select"] [aria-selected="false"] {
+                color: #6b7280 !important;
             }
             
             /* Selectbox focus */
             div[data-baseweb="select"]:focus-within > div {
-                background: rgba(255, 255, 255, 0.15) !important;
-                border-color: rgba(0, 217, 255, 0.7) !important;
-                box-shadow: 0 0 0 4px rgba(0, 217, 255, 0.2),
-                            0 8px 32px rgba(0, 217, 255, 0.3),
-                            inset 0 1px 2px rgba(255, 255, 255, 0.2) !important;
-                transform: translateY(-2px) !important;
-            }
-            
-            /* Dropdown menu - Dark glassmorphic */
-            div[data-baseweb="popover"] {
-                background: rgba(26, 31, 58, 0.95) !important;
-                backdrop-filter: blur(20px) !important;
-                border: 1px solid rgba(255, 255, 255, 0.1) !important;
-                border-radius: 20px !important;
-                box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5) !important;
-            }
-            
-            div[role="option"] {
-                color: #ffffff !important;
-                background: transparent !important;
-                font-weight: 500 !important;
-                padding: 0.9rem 1.2rem !important;
-                border-radius: 12px !important;
-                margin: 0.25rem 0.5rem !important;
-                transition: all 0.2s ease !important;
-            }
-            
-            div[role="option"]:hover {
-                background: rgba(0, 217, 255, 0.15) !important;
-                color: #00d9ff !important;
-            /* CRITICAL FIX: Text inputs - Full visibility */
-            .stTextInput > div > div > input,
-            .stNumberInput > div > div > input {
-                background: #ffffff !important;
-                border: 2px solid rgba(0, 217, 255, 0.5) !important;
-                border-radius: 12px !important;
-                color: #000000 !important;
-                font-size: 1.2rem !important;
-                font-weight: 700 !important;
-                padding: 1.2rem 1.5rem !important;
-                min-height: 65px !important;
-                line-height: 1.5 !important;
-            }
-            
-            .stTextInput > div > div > input::placeholder {
-                color: #6b7280 !important;
-                opacity: 0.7 !important;
-            }
-            
-            /* CRITICAL FIX: Selectbox - Full visibility */
-            div[data-baseweb="select"] {
-                background: #ffffff !important;
-            }
-            
-            div[data-baseweb="select"] > div {
-                background: #ffffff !important;
-                border: 2px solid rgba(0, 217, 255, 0.5) !important;
-                border-radius: 12px !important;
-                color: #000000 !important;
-                padding: 1.2rem 1.5rem !important;
-                min-height: 65px !important;
-                display: flex !important;
-                align-items: center !important;
-            }
-            
-            div[data-baseweb="select"] span {
-                color: #000000 !important;
-                font-weight: 700 !important;
-                font-size: 1.2rem !important;
-            }
-            
-            div[data-baseweb="select"] svg {
-                color: #000000 !important;
+                border-color: #00d9ff !important;
+                box-shadow: 0 0 0 4px rgba(0, 217, 255, 0.25) !important;
             }
             
             /* Dropdown menu */
             div[data-baseweb="popover"] {
                 background: #ffffff !important;
+                border: 2px solid rgba(0, 217, 255, 0.4) !important;
+                border-radius: 12px !important;
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2) !important;
             }
             
+            /* Dropdown options */
             div[role="option"] {
                 color: #000000 !important;
-                background: #ffffff !important;
-                font-weight: 600 !important;
                 padding: 0.75rem 1rem !important;
+                font-weight: 600 !important;
+                background: #ffffff !important;
             }
             
             div[role="option"]:hover {
+    background: #000000 !important;   /* BLACK BACKGROUND */
+    color: #ffffff !important;        /* WHITE TEXT ON HOVER */
+}
+
+            
+            /* Selected option in dropdown */
+            div[role="option"][aria-selected="true"] {
                 background: rgba(0, 217, 255, 0.2) !important;
+                color: #000000 !important;
             }
             
-            div[aria-selected="true"] {
-                background: rgba(0, 217, 255, 0.25) !important;
-                color: #00d9ff !important;
-                font-weight: 700 !important;
-            }
-            
-            /* Checkbox - Glassmorphic */
-                font-weight: 800 !important;
-            }
-            
-            /* Checkbox */
+            /* CHECKBOX → White background + visible label */
             .stCheckbox > label {
                 display: flex !important;
                 align-items: center !important;
@@ -480,18 +438,6 @@ def apply_custom_css():
             }
             
             .stCheckbox > label > div:first-child {
-                background: rgba(255, 255, 255, 0.08) !important;
-                backdrop-filter: blur(10px) !important;
-                border: 1.5px solid rgba(255, 255, 255, 0.2) !important;
-                border-radius: 8px !important;
-                width: 26px !important;
-                height: 26px !important;
-                transition: all 0.3s ease !important;
-            }
-            
-            .stCheckbox > label > div:first-child:hover {
-                background: rgba(255, 255, 255, 0.12) !important;
-                border-color: rgba(0, 217, 255, 0.4) !important;
                 background: #ffffff !important;
                 border: 2px solid rgba(0, 217, 255, 0.4) !important;
                 border-radius: 6px !important;
@@ -502,145 +448,105 @@ def apply_custom_css():
             .stCheckbox > label > div:last-child {
                 color: #ffffff !important;
                 font-weight: 600 !important;
-                font-size: 1.1rem !important;
+                font-size: 1.05rem !important;
             }
             
-            /* Focus states */
-            .stTextInput > div > div > input:focus,
-            .stNumberInput > div > div > input:focus,
-            div[data-baseweb="select"]:focus-within {
+            /* Checkbox checked state */
+            .stCheckbox input:checked + div {
+                background: linear-gradient(135deg, #00d9ff 0%, #a855f7 100%) !important;
                 border-color: #00d9ff !important;
-                box-shadow: 0 0 0 3px rgba(0, 217, 255, 0.3) !important;
-                outline: none !important;
             }
             
-            /* Messages */
-            .stSuccess {
-                background: rgba(16, 185, 129, 0.1) !important;
-                border-left: 4px solid #10b981 !important;
-                color: #10b981 !important;
-                padding: 1rem !important;
-                border-radius: 8px !important;
-            }
+            /* ========================================
+               MOBILE RESPONSIVE
+               ======================================== */
             
-            .stError {
-                background: rgba(239, 68, 68, 0.1) !important;
-                border-left: 4px solid #ef4444 !important;
-                color: #ef4444 !important;
-                padding: 1rem !important;
-                border-radius: 8px !important;
-            }
-            
-            /* Footer */
-            .footer {
-                text-align: center;
-                padding: 3rem;
-                margin-top: 5rem;
-                border-top: 1px solid rgba(255, 255, 255, 0.08);
-                color: #6b7280;
-            }
-            
-            /* Download button */
-            .stDownloadButton > button {
-                background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
-                color: #ffffff !important;
-                border-radius: 12px !important;
-                font-weight: 700 !important;
-                padding: 1rem 2rem !important;
-            }
-            
-            /* Mobile Responsive - Complete */
             @media (max-width: 768px) {
-                /* Navigation */
                 .top-nav {
-                    padding: 0 1rem;
+                    padding: 0 1.5rem;
                     height: 70px;
                     flex-wrap: wrap;
+                    gap: 0.5rem;
                 }
                 
                 .nav-logo-img {
-                    height: 35px;
+                    height: 40px;
                 }
                 
                 .nav-tagline {
                     font-size: 0.7rem;
+                    display: none;
                 }
                 
                 .contact-info {
-                    font-size: 0.75rem;
+                    font-size: 0.8rem;
+                    width: 100%;
+                    justify-content: center;
                     margin-top: 0.5rem;
                 }
                 
-                /* Hero Section - Mobile Optimized */
                 .hero-container {
                     flex-direction: column;
-                    padding: 1.5rem 1rem;
-                    margin-top: 70px;
+                    padding: 2rem 1.5rem;
+                    margin-top: 80px;
                     min-height: auto;
                 }
                 
                 .hero-left {
                     max-width: 100%;
                     text-align: center;
+                    margin-bottom: 2rem;
                 }
                 
                 .hero-title {
-                    font-size: 2rem;
-                    line-height: 1.2;
+                    font-size: 2.5rem;
                     margin-bottom: 1rem;
                 }
                 
                 .hero-subtitle {
-                    font-size: 1rem;
+                    font-size: 1.1rem;
                     margin-bottom: 1rem;
-                    line-height: 1.4;
                 }
                 
                 .hero-description {
-                    font-size: 0.9rem;
+                    font-size: 0.95rem;
                     margin-bottom: 1.5rem;
-                    line-height: 1.5;
                 }
                 
                 .hero-right {
-                    width: 100%;
-                    margin-top: 1.5rem;
+                    margin-top: 1rem;
                 }
                 
                 .ai-avatar {
-                    width: 220px;
-                    height: 220px;
-                    margin: 0 auto;
+                    width: 280px;
+                    height: 280px;
                 }
                 
-                /* Button Center - Mobile */
                 .button-center {
                     margin: 1.5rem 0;
-                    padding: 0 1rem;
                 }
                 
-                /* Features Section - Mobile */
                 .features-section {
-                    padding: 2rem 1rem;
+                    padding: 3rem 1.5rem;
                 }
                 
                 .section-title {
-                    font-size: 1.6rem;
-                    line-height: 1.3;
+                    font-size: 2rem;
+                    margin-bottom: 0.5rem;
                 }
                 
                 .section-subtitle {
-                    font-size: 0.95rem;
-                    margin-bottom: 2rem;
+                    font-size: 1rem;
+                    margin-bottom: 3rem;
                 }
                 
                 .features-grid {
                     grid-template-columns: 1fr;
-                    gap: 1.2rem;
+                    gap: 1.5rem;
                 }
                 
                 .feature-card {
-                    padding: 1.8rem;
+                    padding: 2rem 1.5rem;
                 }
                 
                 .feature-icon {
@@ -649,185 +555,114 @@ def apply_custom_css():
                 }
                 
                 .feature-title {
-                    font-size: 1.1rem;
-                    margin-bottom: 0.8rem;
+                    font-size: 1.2rem;
                 }
                 
                 .feature-text {
-                    font-size: 0.9rem;
-                    line-height: 1.5;
+                    font-size: 0.95rem;
                 }
                 
-                /* Form Title */
                 .form-title {
-                    font-size: 1.8rem;
-                    padding: 0 1rem;
+                    font-size: 2rem;
+                    margin-bottom: 1.5rem;
                 }
                 
-                /* Form Inputs - Mobile Optimized */
-                .main .block-container {
-                    padding-top: 5rem !important;
-                    padding-left: 1rem !important;
-                    padding-right: 1rem !important;
+                .sticky-button-container {
+                    padding: 1rem 1.5rem;
                 }
                 
-                /* Stacked columns on mobile */
-                .row-widget.stHorizontal {
-                    flex-direction: column !important;
-                }
-                
-                .stTextInput > div > div > input,
-                .stNumberInput > div > div > input {
-                    font-size: 1rem !important;
-                    padding: 1rem 1.2rem !important;
-                    min-height: 50px !important;
-                }
-                
-                div[data-baseweb="select"] > div {
-                    font-size: 1rem !important;
-                    padding: 1rem 1.2rem !important;
-                    min-height: 50px !important;
-                }
-                
-                div[data-baseweb="select"] span {
-                    font-size: 1rem !important;
-                }
-                
-                /* Labels on mobile */
-                .stTextInput label,
-                .stNumberInput label,
-                .stSelectbox label,
-                .stCheckbox label {
-                    font-size: 1rem !important;
-                }
-                
-                /* Button on mobile */
                 .stButton > button {
                     font-size: 1rem !important;
                     padding: 0.9rem 2rem !important;
-                    width: 100% !important;
                 }
                 
-                div[data-testid="stFormSubmitButton"] button {
-                    font-size: 1rem !important;
-                    padding: 1rem 2rem !important;
-                    width: 100% !important;
+                .stTextInput > div > div > input,
+                .stNumberInput > div > div > input,
+                .stTextArea > div > div > textarea {
+                    font-size: 0.95rem !important;
+                    padding: 0.9rem 1.1rem !important;
+                    min-height: 48px !important;
                 }
                 
-                /* Footer mobile */
+                div[data-baseweb="select"] > div {
+                    font-size: 0.9rem !important;
+                    padding: 0.75rem 1rem !important;
+                    min-height: 46px !important;
+                }
+                
+                .stTextInput label,
+                .stNumberInput label,
+                .stSelectbox label,
+                .stTextArea label,
+                .stCheckbox label {
+                    font-size: 0.95rem !important;
+                }
+                
                 .footer {
-                    padding: 2rem 1rem;
+                    padding: 2rem 1.5rem;
+                    margin-top: 3rem;
+                }
+                
+                .footer-warning {
+                    padding: 1rem 1.5rem;
                     font-size: 0.85rem;
+                    margin: 1.5rem 1rem;
                 }
             }
             
-            /* Extra small devices - Phones */
-            @media (max-width: 480px) {
-                .top-nav {
-                    height: auto;
-                    padding: 0.8rem;
-                }
-                
-                .nav-tagline {
-                    display: none;
-                }
-                
-                .contact-info {
-                    width: 100%;
-                    justify-content: center;
-                    font-size: 0.7rem;
-                }
-                
+            /* ========================================
+               FOOTER - CENTERED & STYLED
+               ======================================== */
+            
+            .footer {
+                background: rgba(255, 255, 255, 0.02);
+                border-top: 1px solid rgba(255, 255, 255, 0.08);
+                padding: 3rem 2rem;
+                text-align: center;
+                margin-top: 5rem;
+            }
+            
+            .footer p {
+                margin: 0.5rem 0;
+                line-height: 1.6;
+            }
+            
+            .footer-warning {
+                background: rgba(255, 193, 7, 0.1);
+                border: 1px solid rgba(255, 193, 7, 0.3);
+                border-radius: 12px;
+                padding: 1.2rem 2rem;
+                margin: 2rem auto;
+                max-width: 900px;
+                color: #ffc107;
+                font-size: 0.95rem;
+                font-weight: 600;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 0.75rem;
+            }
+            
+            .footer-warning-icon {
+                font-size: 1.5rem;
+            }
                 .hero-title {
-                    font-size: 1.6rem;
-                }
-                
-                .hero-subtitle {
-                    font-size: 0.9rem;
-                }
-                
-                .hero-description {
-                    font-size: 0.85rem;
+                    font-size: 2rem;
                 }
                 
                 .ai-avatar {
-                    width: 180px;
-                    height: 180px;
+                    width: 250px;
+                    height: 250px;
                 }
                 
                 .section-title {
-                    font-size: 1.4rem;
+                    font-size: 1.75rem;
                 }
                 
                 .form-title {
-                    font-size: 1.5rem;
-                }
-                
-                .feature-card {
-                    padding: 1.5rem;
+                    font-size: 1.75rem;
                 }
             }
-            
-            /* Landscape phones */
-            @media (max-width: 896px) and (orientation: landscape) {
-                .hero-container {
-                    margin-top: 60px;
-                    padding: 1rem;
-                }
-                
-                .ai-avatar {
-                    width: 150px;
-                    height: 150px;
-                }
-                
-                .hero-title {
-                    font-size: 1.5rem;
-                }
-            }
-            # Add this to the end of your apply_custom_css() function in styles/css_styles.py
-/* ==========================================
-   MOBILE RESPONSIVENESS - FORM INPUTS
-   ========================================== */
-
-@media (max-width: 768px) {
-    /* Form inputs smaller on mobile */
-    .stSelectbox > div > div,
-    .stTextInput > div > div > input {
-        font-size: 0.95rem !important;
-        padding: 0.9rem 1rem !important;
-        min-height: 45px !important;
-    }
-    
-    /* Form columns stack vertically */
-    .row-widget.stHorizontal {
-        flex-direction: column !important;
-    }
-    
-    /* Form title smaller */
-    .form-title {
-        font-size: 1.6rem !important;
-    }
-    
-    /* Button full width on mobile */
-    div[data-testid="stFormSubmitButton"] button {
-        width: 100% !important;
-        font-size: 1rem !important;
-        padding: 1rem 2rem !important;
-    }
-}
-
-@media (max-width: 480px) {
-    /* Extra small devices */
-    .form-title {
-        font-size: 1.4rem !important;
-    }
-    
-    .stSelectbox > div > div,
-    .stTextInput > div > div > input {
-        font-size: 0.9rem !important;
-        padding: 0.8rem 0.9rem !important;
-    }
-}
         </style>
         """,
         unsafe_allow_html=True
