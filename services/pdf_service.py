@@ -1,123 +1,157 @@
-from fpdf import FPDF
+"""
+Add this code to your existing pdf_service.py file
+Update the create_worksheet_pdf function to include disclaimer at bottom
+"""
+
+from reportlab.lib.pagesizes import A4
+from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+from reportlab.lib.units import inch
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, PageBreak
+from reportlab.lib.enums import TA_CENTER, TA_LEFT
 from io import BytesIO
-from utils.helpers import remove_emojis
 
-
-class WorksheetPDF(FPDF):
-    """Custom PDF class with footer disabled (we add our own footer manually)"""
-
-    def __init__(self):
-        super().__init__()
-        # We disable built-in footer because we ONLY want a footer on last page
-        self.added_disclaimer = False
-
-    def footer(self):
-        """
-        Overridden footer so FPDF does NOT auto-add footer.
-        We keep this empty.
-        """
-        pass
-
-
-def add_last_page_disclaimer(pdf):
+def create_worksheet_pdf(header, subject, chapter, grade, difficulty, questions, answers, include_answers):
     """
-    Draw a true fixed footer at the bottom of the LAST page.
-    Uses absolute positioning so auto-page-break cannot move it.
+    Generate PDF worksheet with disclaimer at bottom
     """
-
-    pdf.set_font("Arial", "I", 8)
-    pdf.set_text_color(120, 120, 120)
-
-    disclaimer = (
-        "Disclaimer: Worksheets are AI-generated and may contain inaccuracies. "
-        "Please review before use."
+    buffer = BytesIO()
+    doc = SimpleDocTemplate(
+        buffer,
+        pagesize=A4,
+        rightMargin=0.75*inch,
+        leftMargin=0.75*inch,
+        topMargin=0.75*inch,
+        bottomMargin=1*inch  # Extra space for disclaimer
     )
+    
+    story = []
+    styles = getSampleStyleSheet()
+    
+    # Custom styles
+    header_style = ParagraphStyle(
+        'CustomHeader',
+        parent=styles['Heading1'],
+        fontSize=16,
+        textColor='#2563eb',
+        spaceAfter=12,
+        alignment=TA_CENTER,
+        fontName='Helvetica-Bold'
+    )
+    
+    title_style = ParagraphStyle(
+        'CustomTitle',
+        parent=styles['Heading2'],
+        fontSize=14,
+        textColor='#1e40af',
+        spaceAfter=8,
+        alignment=TA_CENTER,
+        fontName='Helvetica-Bold'
+    )
+    
+    info_style = ParagraphStyle(
+        'InfoStyle',
+        parent=styles['Normal'],
+        fontSize=10,
+        textColor='#4b5563',
+        spaceAfter=6,
+        alignment=TA_CENTER
+    )
+    
+    question_style = ParagraphStyle(
+        'QuestionStyle',
+        parent=styles['Normal'],
+        fontSize=11,
+        spaceAfter=12,
+        alignment=TA_LEFT,
+        fontName='Helvetica'
+    )
+    
+    answer_style = ParagraphStyle(
+        'AnswerStyle',
+        parent=styles['Normal'],
+        fontSize=10,
+        textColor='#059669',
+        spaceAfter=10,
+        alignment=TA_LEFT,
+        fontName='Helvetica-Oblique'
+    )
+    
+    disclaimer_style = ParagraphStyle(
+        'DisclaimerStyle',
+        parent=styles['Normal'],
+        fontSize=8,
+        textColor='#666666',
+        alignment=TA_CENTER,
+        fontName='Helvetica-Oblique',
+        spaceAfter=0
+    )
+    
+    # Header
+    story.append(Paragraph(header, header_style))
+    story.append(Spacer(1, 0.2*inch))
+    
+    # Title
+    story.append(Paragraph(f"{subject} - {chapter}", title_style))
+    story.append(Paragraph(f"{grade} | Difficulty: {difficulty}", info_style))
+    story.append(Spacer(1, 0.3*inch))
+    
+    # Questions Section
+    story.append(Paragraph("<b>Questions:</b>", question_style))
+    story.append(Spacer(1, 0.1*inch))
+    
+    for i, question in enumerate(questions, 1):
+        q_text = f"<b>Q{i}.</b> {question}"
+        story.append(Paragraph(q_text, question_style))
+        story.append(Spacer(1, 0.15*inch))
+    
+    # Answer Key Section (if enabled)
+    if include_answers and answers:
+        story.append(PageBreak())
+        story.append(Paragraph("<b>Answer Key:</b>", question_style))
+        story.append(Spacer(1, 0.1*inch))
+        
+        for i, answer in enumerate(answers, 1):
+            a_text = f"<b>A{i}.</b> {answer}"
+            story.append(Paragraph(a_text, answer_style))
+            story.append(Spacer(1, 0.1*inch))
+    
+    # Add flexible spacer to push disclaimer to bottom
+    story.append(Spacer(1, 0.5*inch))
+    
+    # DISCLAIMER AT BOTTOM
+    disclaimer_text = (
+        "⚠️ Disclaimer: Worksheets are AI-generated and may contain inaccuracies. "
+        "Please review content before use."
+    )
+    story.append(Paragraph(disclaimer_text, disclaimer_style))
+    
+    # Build PDF
+    doc.build(story)
+    buffer.seek(0)
+    return buffer.getvalue()
 
-    # Move to absolute bottom position (5mm above bottom)
-    page_width = pdf.w  # width of page
-    pdf.set_xy(0, pdf.h - 15)   # <- REAL fixed footer bottom position
-    pdf.cell(page_width, 10, disclaimer, align="C")
+
+# ALTERNATIVE: Add disclaimer as footer on every page
+def add_disclaimer_footer(canvas, doc):
+    """
+    Add disclaimer as footer on every page
+    Use this with doc.build(story, onFirstPage=add_disclaimer_footer, onLaterPages=add_disclaimer_footer)
+    """
+    canvas.saveState()
+    canvas.setFont('Helvetica-Oblique', 8)
+    canvas.setFillColor('#666666')
+    
+    disclaimer = "⚠️ Disclaimer: Worksheets are AI-generated and may contain inaccuracies. Please review before use."
+    
+    # Center the text
+    text_width = canvas.stringWidth(disclaimer, 'Helvetica-Oblique', 8)
+    page_width = A4[0]
+    x_position = (page_width - text_width) / 2
+    
+    canvas.drawString(x_position, 0.5*inch, disclaimer)
+    canvas.restoreState()
 
 
-def create_worksheet_pdf(pdf_header, subject, chapter, grade, difficulty,
-                         questions_list, answers_list, include_answers):
-
-    pdf = WorksheetPDF()
-    pdf.set_auto_page_break(auto=True, margin=20)
-    pdf.add_page()
-    pdf.set_margins(15, 15, 15)
-
-    clean_header = remove_emojis(pdf_header)
-
-    # ==================== HEADER ====================
-    pdf.set_font("Arial", "B", 18)
-    pdf.cell(0, 10, clean_header, ln=True, align="C")
-    pdf.ln(2)
-
-    # ==================== TITLE ====================
-    pdf.set_font("Arial", "B", 16)
-    pdf.cell(0, 10, f"{subject} - {chapter} Worksheet", ln=True, align="C")
-    pdf.ln(5)
-
-    # ==================== DETAILS ====================
-    pdf.set_font("Arial", "", 10)
-    pdf.cell(90, 6, f"Grade: {grade}", border=0)
-    pdf.cell(90, 6, f"Subject: {subject}", ln=True, border=0)
-    pdf.cell(90, 6, f"Chapter: {chapter}", border=0)
-    pdf.cell(90, 6, f"Difficulty: {difficulty}", ln=True, border=0)
-    pdf.cell(90, 6, f"Total Questions: {len(questions_list)}", ln=True, border=0)
-    pdf.ln(5)
-
-    pdf.set_draw_color(0, 217, 255)
-    pdf.line(15, pdf.get_y(), 195, pdf.get_y())
-    pdf.ln(8)
-
-    # ==================== QUESTIONS ====================
-    pdf.set_font("Arial", "B", 13)
-    pdf.cell(0, 8, "Questions", ln=True)
-    pdf.ln(3)
-
-    for idx, question in enumerate(questions_list, 1):
-        if pdf.get_y() > 250:
-            pdf.add_page()
-
-        pdf.set_font("Arial", "B", 11)
-        clean_question = remove_emojis(question)
-        pdf.multi_cell(0, 7, f"Q{idx}. {clean_question}")
-        pdf.ln(4)
-
-    # ==================== ANSWERS ====================
-    if include_answers and answers_list:
-        pdf.add_page()
-
-        pdf.set_font("Arial", "B", 16)
-        pdf.cell(0, 10, "Answer Key", ln=True, align="C")
-        pdf.ln(5)
-
-        pdf.set_draw_color(0, 217, 255)
-        pdf.line(15, pdf.get_y(), 195, pdf.get_y())
-        pdf.ln(8)
-
-        for idx, answer in enumerate(answers_list, 1):
-            if pdf.get_y() > 250:
-                pdf.add_page()
-
-            pdf.set_font("Arial", "B", 11)
-            clean_answer = remove_emojis(answer)
-            pdf.multi_cell(0, 7, f"A{idx}. {clean_answer}")
-            pdf.ln(4)
-
-    # ==================== TRUE BOTTOM DISCLAIMER ====================
-    add_last_page_disclaimer(pdf)
-
-    # ==================== SAVE PDF ====================
-    pdf_output = BytesIO()
-    pdf_bytes = pdf.output(dest='S')
-
-    if isinstance(pdf_bytes, str):
-        pdf_bytes = pdf_bytes.encode("latin1", errors="replace")
-
-    pdf_output.write(pdf_bytes)
-    pdf_output.seek(0)
-
-    return pdf_output
+# USAGE IN YOUR create_worksheet_pdf FUNCTION:
+# Replace: doc.build(story)
+# With: doc.build(story, onFirstPage=add_disclaimer_footer, onLaterPages=add_disclaimer_footer)

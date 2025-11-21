@@ -261,7 +261,7 @@ def apply_custom_css():
             /* Regular buttons - SOLID BLUE WITH WHITE TEXT */
             .stButton > button,
             .stDownloadButton > button {
-                background: linear-gradient(135deg, #16a34a 0%, #15803d 100%) !important;
+                background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%) !important;
                 color: #ffffff !important;
                 border: none !important;
                 border-radius: 50px !important;

@@ -40,7 +40,7 @@ def log_langfuse_event(event_name, metadata):
 
 
 def render_worksheet_form():
-    """Render worksheet generator form including dynamic subject/chapter and fuzzy matching"""
+    """Render worksheet generator form with animations and improved UI"""
 
     st.markdown("<div style='margin-top: 120px;'></div>", unsafe_allow_html=True)
     st.markdown("<h2 class='form-title'>Create Your AI Worksheet</h2>", unsafe_allow_html=True)
@@ -59,28 +59,26 @@ def render_worksheet_form():
                 key="grade_select"
             )
 
-        # ------------------ SUBJECT (TEXT INPUT) ------------------
+        # ------------------ SUBJECT (TEXT INPUT) - FIXED PLACEHOLDER ------------------
         with col2:
             subject = st.text_input(
                 "Subject (Type any subject)",
-                placeholder="e.g., Physics, Social Science, Sanskrit",
+                placeholder="e.g., Physics, Mathematics",
                 key="subject_input"
             )
 
-            # Suggest known subjects below input
-            st.caption("Suggestions: " + ", ".join(SUBJECTS))
+            st.caption("Suggestions: " + ", ".join(SUBJECTS[:5]) + "...")
 
-        # ------------------ CHAPTER (TEXT INPUT + FUZZY MATCH) ------------------
+        # ------------------ CHAPTER (TEXT INPUT + FUZZY MATCH) - FIXED PLACEHOLDER ------------------
         with col3:
             typed_chapter = st.text_input(
                 "Chapter (Type any chapter name)",
-                placeholder="e.g., Acceleration, Fractions, Ray Optics",
+                placeholder="e.g., Motion, Fractions",
                 key="chapter_input"
             )
 
-            # Suggest chapter list dynamically if subject matches
-            if subject in CHAPTERS:
-                st.caption("Suggestions: " + ", ".join(CHAPTERS[subject]))
+            if subject in CHAPTERS and CHAPTERS[subject]:
+                st.caption("Suggestions: " + ", ".join(CHAPTERS[subject][:3]) + "...")
 
         st.markdown("<div style='margin: 2rem 0;'></div>", unsafe_allow_html=True)
 
@@ -118,15 +116,15 @@ def render_worksheet_form():
 
         st.markdown("<div style='margin: 2.5rem 0;'></div>", unsafe_allow_html=True)
 
-        # ------------------ STICKY GENERATE BUTTON ------------------
+        # ------------------ GENERATE BUTTON (VISIBLE BLUE) ------------------
         submitted = st.form_submit_button(
             "🚀 Generate Worksheet",
             use_container_width=True
         )
 
-    st.markdown("<div style='margin-bottom: 5rem;'></div>", unsafe_allow_html=True)
+    st.markdown("<div style='margin-bottom: 3rem;'></div>", unsafe_allow_html=True)
 
-    # ------------------ SUBMIT HANDLER ------------------
+    # ------------------ SUBMIT HANDLER WITH ANIMATION ------------------
     if submitted:
 
         # Fix subject/chapter formatting
@@ -155,14 +153,22 @@ def render_worksheet_form():
             "chapter_corrected": corrected_chapter
         })
 
-        # LOADING OVERLAY
+        # LOADING ANIMATION - SPARKLE EFFECT
         progress_container = st.empty()
         progress_container.markdown("""
-        <div style='text-align:center; padding: 3rem;'>
-            <div class='loader'></div>
-            <p style='color:#00d9ff; font-size:1.3rem; margin-top:1.5rem; font-weight:700;'>
-                ✨ AI is generating your worksheet...
-            </p>
+        <div class='loading-animation'>
+            <div class='falling-stars'>
+                <div class='star'>⭐</div>
+                <div class='star'>✨</div>
+                <div class='star'>🌟</div>
+                <div class='star'>💫</div>
+                <div class='star'>⭐</div>
+            </div>
+            <div class='sparkle-container'>
+                <span class='sparkle'>✨</span>
+                <p class='sparkle-text'>Generating your worksheet...</p>
+                <span class='sparkle'>✨</span>
+            </div>
         </div>
         """, unsafe_allow_html=True)
 
