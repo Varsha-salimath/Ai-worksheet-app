@@ -2,10 +2,6 @@
 _Revolutionizing worksheet creation with AI_
 
 <p align="center">
-  <img src="https://via.placeholder.com/800x250?text=InfinityLearn+AI+Worksheet+Generator" alt="Project Banner"/>
-</p>
-
-<p align="center">
   <img src="https://img.shields.io/badge/Powered%20By-Google%20Gemini%20AI-blue?style=for-the-badge"/>
   <img src="https://img.shields.io/badge/Built%20With-Streamlit-red?style=for-the-badge"/>
   <img src="https://img.shields.io/badge/Tracking-Langfuse%20v3-purple?style=for-the-badge"/>
