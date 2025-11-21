@@ -40,7 +40,7 @@ def log_langfuse_event(event_name, metadata):
 
 
 def render_worksheet_form():
-    """Render worksheet generator form with animations and improved UI"""
+    """Render worksheet generator form - Professional & Clean"""
 
     st.markdown("<div style='margin-top: 120px;'></div>", unsafe_allow_html=True)
     st.markdown("<h2 class='form-title'>Create Your AI Worksheet</h2>", unsafe_allow_html=True)
@@ -59,7 +59,7 @@ def render_worksheet_form():
                 key="grade_select"
             )
 
-        # ------------------ SUBJECT (TEXT INPUT) - FIXED PLACEHOLDER ------------------
+        # ------------------ SUBJECT ------------------
         with col2:
             subject = st.text_input(
                 "Subject (Type any subject)",
@@ -69,7 +69,7 @@ def render_worksheet_form():
 
             st.caption("Suggestions: " + ", ".join(SUBJECTS[:5]) + "...")
 
-        # ------------------ CHAPTER (TEXT INPUT + FUZZY MATCH) - FIXED PLACEHOLDER ------------------
+        # ------------------ CHAPTER ------------------
         with col3:
             typed_chapter = st.text_input(
                 "Chapter (Type any chapter name)",
@@ -116,15 +116,15 @@ def render_worksheet_form():
 
         st.markdown("<div style='margin: 2.5rem 0;'></div>", unsafe_allow_html=True)
 
-        # ------------------ GENERATE BUTTON (VISIBLE BLUE) ------------------
+        # ------------------ GENERATE BUTTON (CLEAN, NO EMOJI) ------------------
         submitted = st.form_submit_button(
-            "🚀 Generate Worksheet",
+            "Generate Worksheet",
             use_container_width=True
         )
 
     st.markdown("<div style='margin-bottom: 3rem;'></div>", unsafe_allow_html=True)
 
-    # ------------------ SUBMIT HANDLER WITH ANIMATION ------------------
+    # ------------------ SUBMIT HANDLER WITH FULL-SCREEN OVERLAY ------------------
     if submitted:
 
         # Fix subject/chapter formatting
@@ -153,21 +153,25 @@ def render_worksheet_form():
             "chapter_corrected": corrected_chapter
         })
 
-        # LOADING ANIMATION - SPARKLE EFFECT
+        # FULL-SCREEN LOADING OVERLAY - PROFESSIONAL
         progress_container = st.empty()
         progress_container.markdown("""
-        <div class='loading-animation'>
-            <div class='falling-stars'>
-                <div class='star'>⭐</div>
-                <div class='star'>✨</div>
-                <div class='star'>🌟</div>
-                <div class='star'>💫</div>
-                <div class='star'>⭐</div>
-            </div>
-            <div class='sparkle-container'>
-                <span class='sparkle'>✨</span>
-                <p class='sparkle-text'>Generating your worksheet...</p>
-                <span class='sparkle'>✨</span>
+        <div class='loading-overlay'>
+            <div class='loading-content'>
+                <div class='loading-spinner'></div>
+                <div class='sparkles'>
+                    <div class='sparkle'></div>
+                    <div class='sparkle'></div>
+                    <div class='sparkle'></div>
+                    <div class='sparkle'></div>
+                    <div class='sparkle'></div>
+                    <div class='sparkle'></div>
+                </div>
+                <h2 class='loading-title'>Generating Your Worksheet</h2>
+                <p class='loading-subtitle'>AI is crafting personalized questions for you...</p>
+                <div class='loading-progress'>
+                    <div class='loading-progress-bar'></div>
+                </div>
             </div>
         </div>
         """, unsafe_allow_html=True)
@@ -203,7 +207,7 @@ def render_worksheet_form():
             questions = questions[:num_questions]
             answers = answers[:num_questions]
 
-            # PDF generation
+            # PDF generation with enhanced metadata
             pdf_header = "Infinity Learn by Sri Chaitanya"
             pdf_output = create_worksheet_pdf(
                 pdf_header,
@@ -213,7 +217,8 @@ def render_worksheet_form():
                 difficulty,
                 questions,
                 answers,
-                include_answers
+                include_answers,
+                pdf_name  # Pass PDF name for summary
             )
 
             st.success("🎉 Worksheet generated successfully!")

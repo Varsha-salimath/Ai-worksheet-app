@@ -1,7 +1,7 @@
 import streamlit as st
 
 def apply_custom_css():
-    """Apply all custom CSS styling with clean inputs and sticky buttons"""
+    """Apply all custom CSS styling - Professional & Clean"""
     st.markdown(
         """
         <style>
@@ -255,13 +255,37 @@ def apply_custom_css():
             }
             
             /* ========================================
-               BUTTONS - VISIBLE & STYLED
+               BUTTONS - CLEAN & PROFESSIONAL
                ======================================== */
             
-            /* Regular buttons - SOLID BLUE WITH WHITE TEXT */
-            .stButton > button,
-            .stDownloadButton > button {
-                background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%) !important;
+            /* Landing page buttons - Keep original gradient */
+            .stButton > button {
+                background: linear-gradient(135deg, #00d9ff 0%, #a855f7 100%) !important;
+                color: #ffffff !important;
+                border: none !important;
+                border-radius: 50px !important;
+                font-weight: 700 !important;
+                font-size: 1.1rem !important;
+                padding: 1rem 3rem !important;
+                transition: all 0.3s ease !important;
+                box-shadow: 0 10px 30px rgba(0, 217, 255, 0.3) !important;
+                width: 100% !important;
+                max-width: 500px !important;
+                display: block !important;
+                margin: 2rem auto !important;
+                cursor: pointer !important;
+            }
+            
+            .stButton > button:hover {
+                background: linear-gradient(135deg, #00b8d4 0%, #8b3fc7 100%) !important;
+                transform: translateY(-3px) !important;
+                box-shadow: 0 15px 40px rgba(0, 217, 255, 0.5) !important;
+                color: #ffffff !important;
+            }
+            
+            /* Form Submit Button - CLEAN, NO EMOJI */
+            .stFormSubmitButton > button {
+                background: #2563EB !important;
                 color: #ffffff !important;
                 border: none !important;
                 border-radius: 50px !important;
@@ -272,134 +296,170 @@ def apply_custom_css():
                 box-shadow: 0 10px 30px rgba(37, 99, 235, 0.4) !important;
                 width: 100% !important;
                 max-width: 500px !important;
+                cursor: pointer !important;
+                margin: 0 auto !important;
+                display: block !important;
+            }
+            
+            .stFormSubmitButton > button:hover {
+                background: #1E3A8A !important;
+                color: #ffffff !important;
+                transform: translateY(-3px) !important;
+                box-shadow: 0 15px 40px rgba(37, 99, 235, 0.6) !important;
+            }
+            
+            .stFormSubmitButton > button:disabled {
+                background: #6b7280 !important;
+                cursor: not-allowed !important;
+                opacity: 0.6 !important;
+            }
+            
+            /* Download button */
+            .stDownloadButton > button {
+                background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+                color: #ffffff !important;
+                border: none !important;
+                border-radius: 50px !important;
+                font-weight: 700 !important;
+                font-size: 1.1rem !important;
+                padding: 1rem 3rem !important;
+                transition: all 0.3s ease !important;
+                box-shadow: 0 10px 30px rgba(16, 185, 129, 0.4) !important;
+                width: 100% !important;
+                max-width: 500px !important;
                 display: block !important;
                 margin: 2rem auto !important;
                 cursor: pointer !important;
             }
             
-            .stButton > button:hover,
             .stDownloadButton > button:hover {
-                background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%) !important;
+                background: linear-gradient(135deg, #059669 0%, #047857 100%) !important;
                 transform: translateY(-3px) !important;
-                box-shadow: 0 15px 40px rgba(37, 99, 235, 0.6) !important;
+                box-shadow: 0 15px 40px rgba(16, 185, 129, 0.6) !important;
                 color: #ffffff !important;
             }
             
-            /* Make sure button is visible */
-            .stButton,
-            .stDownloadButton {
-                display: block !important;
-                text-align: center !important;
-                margin: 2rem 0 !important;
-                padding-bottom: 2rem !important;
-            }
+            /* ========================================
+               FULL SCREEN LOADING OVERLAY
+               ======================================== */
             
-            /* Loading Animation Container */
-            .loading-animation {
-                text-align: center;
-                padding: 2rem;
-                margin: 2rem 0;
-            }
-            
-            .sparkle-container {
+            .loading-overlay {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100vw;
+                height: 100vh;
+                background: rgba(10, 14, 39, 0.95);
+                backdrop-filter: blur(10px);
+                z-index: 9999;
                 display: flex;
-                justify-content: center;
+                flex-direction: column;
                 align-items: center;
-                gap: 1rem;
-                margin: 2rem 0;
+                justify-content: center;
+                animation: fadeIn 0.3s ease-in;
             }
             
-            .sparkle-text {
-                color: #2563eb;
-                font-size: 1.3rem;
+            @keyframes fadeIn {
+                from { opacity: 0; }
+                to { opacity: 1; }
+            }
+            
+            .loading-content {
+                text-align: center;
+                max-width: 500px;
+                padding: 2rem;
+            }
+            
+            .loading-spinner {
+                width: 80px;
+                height: 80px;
+                margin: 0 auto 2rem;
+                border: 4px solid rgba(37, 99, 235, 0.2);
+                border-top: 4px solid #2563EB;
+                border-radius: 50%;
+                animation: spin 1s linear infinite;
+            }
+            
+            @keyframes spin {
+                0% { transform: rotate(0deg); }
+                100% { transform: rotate(360deg); }
+            }
+            
+            .loading-title {
+                font-size: 1.5rem;
                 font-weight: 700;
-                animation: pulse 1.5s ease-in-out infinite;
+                color: #ffffff;
+                margin-bottom: 1rem;
+            }
+            
+            .loading-subtitle {
+                font-size: 1rem;
+                color: #9ca3af;
+                margin-bottom: 2rem;
+            }
+            
+            /* Professional Sparkle Animation */
+            .sparkles {
+                position: absolute;
+                width: 100%;
+                height: 100%;
+                pointer-events: none;
             }
             
             .sparkle {
-                display: inline-block;
-                font-size: 2rem;
-                animation: sparkle 1.5s ease-in-out infinite;
-            }
-            
-            @keyframes sparkle {
-                0%, 100% {
-                    transform: scale(1) rotate(0deg);
-                    opacity: 1;
-                }
-                50% {
-                    transform: scale(1.3) rotate(180deg);
-                    opacity: 0.7;
-                }
-            }
-            
-            @keyframes pulse {
-                0%, 100% {
-                    opacity: 1;
-                }
-                50% {
-                    opacity: 0.6;
-                }
-            }
-            
-            /* Falling Stars Animation */
-            .falling-stars {
-                position: relative;
-                width: 100%;
-                height: 100px;
-                overflow: hidden;
-            }
-            
-            .star {
                 position: absolute;
-                width: 20px;
-                height: 20px;
-                font-size: 1.5rem;
-                animation: fall 2s linear infinite;
+                width: 4px;
+                height: 4px;
+                background: #2563EB;
+                border-radius: 50%;
+                animation: sparkleFloat 3s ease-in-out infinite;
+                box-shadow: 0 0 10px #2563EB;
             }
             
-            .star:nth-child(1) { left: 10%; animation-delay: 0s; }
-            .star:nth-child(2) { left: 30%; animation-delay: 0.5s; }
-            .star:nth-child(3) { left: 50%; animation-delay: 1s; }
-            .star:nth-child(4) { left: 70%; animation-delay: 1.5s; }
-            .star:nth-child(5) { left: 90%; animation-delay: 0.8s; }
+            .sparkle:nth-child(1) { left: 20%; top: 20%; animation-delay: 0s; }
+            .sparkle:nth-child(2) { left: 80%; top: 30%; animation-delay: 0.5s; }
+            .sparkle:nth-child(3) { left: 40%; top: 60%; animation-delay: 1s; }
+            .sparkle:nth-child(4) { left: 70%; top: 70%; animation-delay: 1.5s; }
+            .sparkle:nth-child(5) { left: 30%; top: 80%; animation-delay: 2s; }
+            .sparkle:nth-child(6) { left: 60%; top: 40%; animation-delay: 2.5s; }
             
-            @keyframes fall {
-                0% {
-                    top: -20px;
-                    opacity: 1;
-                }
-                100% {
-                    top: 100px;
+            @keyframes sparkleFloat {
+                0%, 100% {
+                    transform: translateY(0) scale(0);
                     opacity: 0;
                 }
+                50% {
+                    transform: translateY(-30px) scale(1);
+                    opacity: 1;
+                }
             }
             
-            /* Sticky button container */
-            .sticky-button-container {
-                position: fixed;
-                bottom: 0;
-                left: 0;
-                right: 0;
-                background: rgba(10, 14, 39, 0.98);
-                backdrop-filter: blur(20px);
-                border-top: 1px solid rgba(255, 255, 255, 0.08);
-                padding: 1.5rem 4rem;
-                z-index: 999;
-                box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.3);
+            /* Progress Bar */
+            .loading-progress {
+                width: 100%;
+                height: 4px;
+                background: rgba(37, 99, 235, 0.2);
+                border-radius: 2px;
+                overflow: hidden;
+                margin-top: 1.5rem;
             }
             
-            .sticky-button-container .stButton > button {
-                max-width: 400px;
-                margin: 0 auto;
-                display: block;
+            .loading-progress-bar {
+                height: 100%;
+                background: linear-gradient(90deg, #2563EB, #00d9ff);
+                animation: progress 3s ease-in-out infinite;
+            }
+            
+            @keyframes progress {
+                0% { width: 0%; }
+                50% { width: 70%; }
+                100% { width: 100%; }
             }
             
             /* ========================================
                INPUT FIELDS - WHITE BG, BLACK TEXT
                ======================================== */
             
-            /* LABELS → White, Bold */
             .stTextInput label,
             .stNumberInput label,
             .stSelectbox label,
@@ -412,7 +472,6 @@ def apply_custom_css():
                 margin-bottom: 0.75rem !important;
             }
             
-            /* TEXT & NUMBER INPUTS → White background + Black text */
             .stTextInput > div > div > input,
             .stNumberInput > div > div > input,
             .stTextArea > div > div > textarea {
@@ -427,14 +486,13 @@ def apply_custom_css():
                 transition: all 0.3s ease !important;
             }
             
-            /* Placeholder text → Grey */
             .stTextInput > div > div > input::placeholder,
             .stTextArea > div > div > textarea::placeholder {
-                color: #6b7280 !important;
+                color: #9ca3af !important;
                 font-weight: 500 !important;
+                font-style: italic !important;
             }
             
-            /* FOCUS → Blue glow */
             .stTextInput > div > div > input:focus,
             .stNumberInput > div > div > input:focus,
             .stTextArea > div > div > textarea:focus {
@@ -443,7 +501,7 @@ def apply_custom_css():
                 outline: none !important;
             }
             
-            /* SELECTBOX → White background + Black text - SMALLER SIZE */
+            /* SELECTBOX */
             div[data-baseweb="select"] > div {
                 background: #ffffff !important;
                 border-radius: 10px !important;
@@ -458,7 +516,6 @@ def apply_custom_css():
                 align-items: center !important;
             }
             
-            /* Selectbox selected value text - ALL variations */
             div[data-baseweb="select"] span,
             div[data-baseweb="select"] div,
             div[data-baseweb="select"] > div > div {
@@ -466,7 +523,6 @@ def apply_custom_css():
                 font-weight: 600 !important;
             }
             
-            /* Selectbox dropdown arrow - make it visible */
             div[data-baseweb="select"] svg,
             div[data-baseweb="select"] svg path {
                 fill: #000000 !important;
@@ -474,18 +530,15 @@ def apply_custom_css():
                 stroke: #000000 !important;
             }
             
-            /* Selectbox placeholder */
             div[data-baseweb="select"] [aria-selected="false"] {
                 color: #6b7280 !important;
             }
             
-            /* Selectbox focus */
             div[data-baseweb="select"]:focus-within > div {
                 border-color: #00d9ff !important;
                 box-shadow: 0 0 0 4px rgba(0, 217, 255, 0.25) !important;
             }
             
-            /* Dropdown menu */
             div[data-baseweb="popover"] {
                 background: #ffffff !important;
                 border: 2px solid rgba(0, 217, 255, 0.4) !important;
@@ -493,7 +546,6 @@ def apply_custom_css():
                 box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2) !important;
             }
             
-            /* Dropdown options */
             div[role="option"] {
                 color: #000000 !important;
                 padding: 0.75rem 1rem !important;
@@ -506,13 +558,12 @@ def apply_custom_css():
                 color: #000000 !important;
             }
             
-            /* Selected option in dropdown */
             div[role="option"][aria-selected="true"] {
                 background: rgba(0, 217, 255, 0.2) !important;
                 color: #000000 !important;
             }
             
-            /* CHECKBOX → White background + visible label */
+            /* CHECKBOX */
             .stCheckbox > label {
                 display: flex !important;
                 align-items: center !important;
@@ -533,167 +584,13 @@ def apply_custom_css():
                 font-size: 1.05rem !important;
             }
             
-            /* Checkbox checked state */
             .stCheckbox input:checked + div {
                 background: linear-gradient(135deg, #00d9ff 0%, #a855f7 100%) !important;
                 border-color: #00d9ff !important;
             }
             
             /* ========================================
-               MOBILE RESPONSIVE
-               ======================================== */
-            
-            @media (max-width: 768px) {
-                .top-nav {
-                    padding: 0 1.5rem;
-                    height: 70px;
-                    flex-wrap: wrap;
-                    gap: 0.5rem;
-                }
-                
-                .nav-logo-img {
-                    height: 40px;
-                }
-                
-                .nav-tagline {
-                    font-size: 0.7rem;
-                    display: none;
-                }
-                
-                .contact-info {
-                    font-size: 0.8rem;
-                    width: 100%;
-                    justify-content: center;
-                    margin-top: 0.5rem;
-                }
-                
-                .hero-container {
-                    flex-direction: column;
-                    padding: 2rem 1.5rem;
-                    margin-top: 80px;
-                    min-height: auto;
-                }
-                
-                .hero-left {
-                    max-width: 100%;
-                    text-align: center;
-                    margin-bottom: 2rem;
-                }
-                
-                .hero-title {
-                    font-size: 2.5rem;
-                    margin-bottom: 1rem;
-                }
-                
-                .hero-subtitle {
-                    font-size: 1.1rem;
-                    margin-bottom: 1rem;
-                }
-                
-                .hero-description {
-                    font-size: 0.95rem;
-                    margin-bottom: 1.5rem;
-                }
-                
-                .hero-right {
-                    margin-top: 1rem;
-                }
-                
-                .ai-avatar {
-                    width: 280px;
-                    height: 280px;
-                }
-                
-                .button-center {
-                    margin: 1.5rem 0;
-                }
-                
-                .features-section {
-                    padding: 3rem 1.5rem;
-                }
-                
-                .section-title {
-                    font-size: 2rem;
-                    margin-bottom: 0.5rem;
-                }
-                
-                .section-subtitle {
-                    font-size: 1rem;
-                    margin-bottom: 3rem;
-                }
-                
-                .features-grid {
-                    grid-template-columns: 1fr;
-                    gap: 1.5rem;
-                }
-                
-                .feature-card {
-                    padding: 2rem 1.5rem;
-                }
-                
-                .feature-icon {
-                    font-size: 2.5rem;
-                    margin-bottom: 1rem;
-                }
-                
-                .feature-title {
-                    font-size: 1.2rem;
-                }
-                
-                .feature-text {
-                    font-size: 0.95rem;
-                }
-                
-                .form-title {
-                    font-size: 2rem;
-                    margin-bottom: 1.5rem;
-                }
-                
-                .sticky-button-container {
-                    padding: 1rem 1.5rem;
-                }
-                
-                .stButton > button {
-                    font-size: 1rem !important;
-                    padding: 0.9rem 2rem !important;
-                }
-                
-                .stTextInput > div > div > input,
-                .stNumberInput > div > div > input,
-                .stTextArea > div > div > textarea {
-                    font-size: 0.95rem !important;
-                    padding: 0.9rem 1.1rem !important;
-                    min-height: 48px !important;
-                }
-                
-                div[data-baseweb="select"] > div {
-                    font-size: 0.9rem !important;
-                    padding: 0.75rem 1rem !important;
-                    min-height: 46px !important;
-                }
-                
-                .stTextInput label,
-                .stNumberInput label,
-                .stSelectbox label,
-                .stTextArea label,
-                .stCheckbox label {
-                    font-size: 0.95rem !important;
-                }
-                
-                .footer {
-                    padding: 2rem 1.5rem;
-                    margin-top: 3rem;
-                }
-                
-                .footer-warning {
-                    padding: 1rem 1.5rem;
-                    font-size: 0.85rem;
-                    margin: 1.5rem 1rem;
-                }
-            }
-            
-            /* ========================================
-               FOOTER - CENTERED & STYLED
+               FOOTER
                ======================================== */
             
             .footer {
@@ -728,23 +625,79 @@ def apply_custom_css():
             .footer-warning-icon {
                 font-size: 1.5rem;
             }
+            
+            /* ========================================
+               MOBILE RESPONSIVE
+               ======================================== */
+            
+            @media (max-width: 768px) {
+                .top-nav {
+                    padding: 0 1.5rem;
+                    height: 70px;
+                }
+                
+                .hero-container {
+                    flex-direction: column;
+                    padding: 2rem 1.5rem;
+                    margin-top: 80px;
+                }
+                
+                .hero-left {
+                    max-width: 100%;
+                    text-align: center;
+                    margin-bottom: 2rem;
+                }
+                
+                .hero-title {
+                    font-size: 2.5rem;
+                }
+                
+                .ai-avatar {
+                    width: 280px;
+                    height: 280px;
+                }
+                
+                .features-section {
+                    padding: 3rem 1.5rem;
+                }
+                
+                .features-grid {
+                    grid-template-columns: 1fr;
+                }
+                
+                .form-title {
+                    font-size: 2rem;
+                }
+                
+                .loading-title {
+                    font-size: 1.3rem;
+                }
+                
+                .loading-subtitle {
+                    font-size: 0.9rem;
+                }
+                
+                .loading-spinner {
+                    width: 60px;
+                    height: 60px;
+                }
+            }
+            
+            @media (max-width: 480px) {
                 .hero-title {
                     font-size: 2rem;
                 }
                 
                 .ai-avatar {
-                    width: 250px;
-                    height: 250px;
-                }
-                
-                .section-title {
-                    font-size: 1.75rem;
+                    width: 220px;
+                    height: 220px;
                 }
                 
                 .form-title {
                     font-size: 1.75rem;
                 }
             }
+            
         </style>
         """,
         unsafe_allow_html=True
