@@ -213,3 +213,9 @@ Email: `salimathvarsha7@gmail.com`
 InfinityLearn EdTech
 
 ---
+💛 Author
+
+Varsha Salimath
+
+AI Engineer | InfinityLearn
+For queries: Reach out anytime!
